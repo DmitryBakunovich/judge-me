@@ -6,10 +6,12 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    db = new DataBase();
+    db->connectToDataBase();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-
