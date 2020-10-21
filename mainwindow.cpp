@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     db = new DataBase();
     db->connectToDataBase();
+    qDebug() << db->takeAllFields();
+    qDebug() << db->takeFieldsForJudgment();
 }
 
 MainWindow::~MainWindow()
