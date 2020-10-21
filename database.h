@@ -25,6 +25,8 @@ public:
     QMap<QString, QString> takeAllFields();
     void addJudgment(QString article, QJsonDocument fields);
     void deleteJudgment(QString article);
+    void addField(QString fieldName);
+    void deleteField(QString fieldName);
 
 private:
     QSqlDatabase db;
