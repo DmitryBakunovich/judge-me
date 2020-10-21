@@ -52,3 +52,20 @@ QMap<QString, QString> DataBase::takeAllFields() {
     }
     return allFieldsMap;
 }
+
+void DataBase::addJudgment(QString article, QJsonDocument fields) {
+    QSqlQuery query;
+    query.prepare("INSERT INTO judgment (article, fields) VALUES (:article, :fields)");
+    query.bindValue(":article", article);
+    query.bindValue(":fields", fields.toJson());
+    query.exec();
+    qDebug() << true;
+}
+
+void DataBase::deleteJudgment(QString article) {
+    QSqlQuery query;
+    query.prepare("DELETE FROM judgment WHERE article = :article ");
+    query.bindValue(":article", article);
+    query.exec();
+    qDebug() << true;
+}

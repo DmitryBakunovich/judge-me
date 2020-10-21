@@ -23,6 +23,8 @@ public:
     void connectToDataBase();
     QJsonArray takeFieldsForJudgment();
     QMap<QString, QString> takeAllFields();
+    void addJudgment(QString article, QJsonDocument fields);
+    void deleteJudgment(QString article);
 
 private:
     QSqlDatabase db;
