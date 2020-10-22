@@ -6,10 +6,14 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    db = new DataBase();
+    db->connectToDataBase();
+    qDebug() << db->takeAllFields();
+    qDebug() << db->takeFieldsForJudgment();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-
