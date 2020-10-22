@@ -24,9 +24,11 @@ public:
     QJsonArray takeFieldsForJudgment();
     QMap<QString, QString> takeAllFields();
     void addJudgment(QString article, QJsonDocument fields);
+    void updateJudgment(QString article, QJsonDocument fields);
     void deleteJudgment(QString article);
-    void addField(QString fieldName);
-    void deleteField(QString fieldName);
+    void addField(QString fieldName, QString fieldReduction);
+    void updateField(QString newFieldName, QString fieldReduction);
+    void deleteField(QString fieldReduction);
 
 private:
     QSqlDatabase db;

@@ -61,6 +61,14 @@ void DataBase::addJudgment(QString article, QJsonDocument fields) {
     query.exec();
 }
 
+void DataBase::updateJudgment(QString article, QJsonDocument fields) {
+    QSqlQuery query;
+    query.prepare("UPDATE judgment SET fields = :fields WHERE article = :article;");
+    query.bindValue(":article", article);
+    query.bindValue(":fields", fields.toJson());
+    query.exec();
+}
+
 void DataBase::deleteJudgment(QString article) {
     QSqlQuery query;
     query.prepare("DELETE FROM judgment WHERE article = :article");
@@ -68,16 +76,25 @@ void DataBase::deleteJudgment(QString article) {
     query.exec();
 }
 
-void DataBase::addField(QString fieldName) {
+void DataBase::addField(QString fieldName, QString fieldReduction) {
     QSqlQuery query;
-    query.prepare("INSERT INTO field (fieldName) VALUES (:fieldName)");
+    query.prepare("INSERT INTO field (fullname, reduction) VALUES (:fieldName, :fieldReduction)");
     query.bindValue(":fieldName", fieldName);
+    query.bindValue(":fieldReduction", fieldReduction);
     query.exec();
 }
 
-void DataBase::deleteField(QString fieldName) {
+void DataBase::updateField(QString newFieldName, QString fieldReduction) {
     QSqlQuery query;
-    query.prepare("DELETE FROM judgment WHERE fieldName = :fieldName");
-    query.bindValue(":fieldName", fieldName);
+    query.prepare("UPDATE field SET fullname = :fieldName WHERE reduction = :fieldReduction");
+    query.bindValue(":fieldName", newFieldName);
+    query.bindValue(":fieldReduction", fieldReduction);
+    qDebug() << query.exec();
+}
+
+void DataBase::deleteField(QString fieldReduction) {
+    QSqlQuery query;
+    query.prepare("DELETE FROM field WHERE reduction = :fieldReduction");
+    query.bindValue(":fieldReduction", fieldReduction);
     query.exec();
 }
