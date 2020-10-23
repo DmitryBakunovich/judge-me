@@ -1,4 +1,4 @@
-#include "database.h"
+#include "database/database.h"
 
 DataBase::DataBase(QObject *parent) : QObject(parent) {
 
@@ -43,7 +43,7 @@ QJsonArray DataBase::takeFieldsForJudgment() {
 QMap<QString, QString> DataBase::takeAllFields() {
     QSqlQuery query;
     QMap<QString, QString> allFieldsMap;
-    query.exec("SELECT name, symbol FROM field");
+    query.exec("SELECT fullname, reduction FROM field");
     while (query.next()) {
         allFieldsMap.insert(
                     query.value(0).toString(),
