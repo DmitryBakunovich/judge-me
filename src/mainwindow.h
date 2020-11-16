@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+
 #include <src/database/database.h>
+#include <src/stylehelper/stylehelper.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/titlebar">
+        <file>images/titlebar/close.png</file>
+        <file>images/titlebar/close-hover.png</file>
+        <file>images/titlebar/icon.png</file>
+        <file>images/titlebar/maximize.png</file>
+        <file>images/titlebar/maximize-hover.png</file>
+        <file>images/titlebar/restore.png</file>
+        <file>images/titlebar/restore-hover.png</file>
+        <file>images/titlebar/rollup.png</file>
+        <file>images/titlebar/rollup-hover.png</file>
+    </qresource>
+    <qresource prefix="/main"/>
+</RCC>

@@ -13,11 +13,13 @@ CONFIG += c++11
 SOURCES += \
     src/database/database.cpp \
     src/main.cpp \
-    src/mainwindow.cpp
+    src/mainwindow.cpp \
+    src/stylehelper/stylehelper.cpp
 
 HEADERS += \
     src/database/database.h \
-    src/mainwindow.h
+    src/mainwindow.h \
+    src/stylehelper/stylehelper.h
 
 FORMS += \
     src/mainwindow.ui
@@ -26,3 +28,8 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    resource.qrc
+
+DISTFILES +=
