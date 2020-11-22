@@ -10,5 +10,14 @@
         <file>images/titlebar/rollup.png</file>
         <file>images/titlebar/rollup-hover.png</file>
     </qresource>
-    <qresource prefix="/main"/>
+    <qresource prefix="/main">
+        <file>images/main/add.png</file>
+        <file>images/main/add-hover.png</file>
+        <file>images/main/background.png</file>
+        <file>images/main/edit.png</file>
+        <file>images/main/edit-hover.png</file>
+        <file>images/main/trash-basket.png</file>
+        <file>images/main/trash-basket-hover.png</file>
+        <file>images/main/trash-basket-item-count-background.png</file>
+    </qresource>
 </RCC>

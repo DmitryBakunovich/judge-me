@@ -6,8 +6,6 @@
 class StyleHelper
 {
 public:
-    static QString getMaximizeStyleSheet();
-    static QString getRestoreStyleSheet();
 };
 
 #endif

@@ -10,13 +10,25 @@
     <x>0</x>
     <y>0</y>
     <width>1280</width>
-    <height>745</height>
+    <height>749</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
     <width>1280</width>
-    <height>745</height>
+    <height>749</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1280</width>
+    <height>749</height>
    </size>
   </property>
   <property name="baseSize">
@@ -51,9 +63,27 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>1280</width>
+     <height>749</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>1280</width>
+     <height>749</height>
+    </size>
+   </property>
    <property name="styleSheet">
     <string notr="true">QWidget#centralwidget {
-	border-image: url(:/images/фон (9).png);
+	border-image: url(:/main/images/main/background.png);
 	margin-top: 28px;
 }</string>
    </property>
@@ -74,7 +104,10 @@
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout_2">
+     <layout class="QHBoxLayout" name="titleBarLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
       <property name="leftMargin">
        <number>0</number>
       </property>
@@ -87,11 +120,52 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <item row="0" column="1">
-       <widget class="QLabel" name="label">
+      <item>
+       <widget class="QLabel" name="icon">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>44</width>
+          <height>29</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">image: url(:/titlebar/images/titlebar/icon.png);
+background-color: #554d93;
+	padding-left: 10px;
+	padding-bottom: 4px;
+	padding-top: 4px;</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+        <property name="wordWrap">
+         <bool>false</bool>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <property name="indent">
+         <number>-1</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="title">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -99,51 +173,21 @@
          </sizepolicy>
         </property>
         <property name="styleSheet">
-         <string notr="true">color: #2b284c;
-background-color: #554d93;
-font-size: 12px;</string>
+         <string notr="true">#title {
+	color: #2b284c;
+	background-color: #554d93;
+	font-size: 12px;
+}</string>
         </property>
         <property name="text">
          <string>JudgeMe</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="maximaz">
+      <item>
+       <widget class="QToolButton" name="rollup">
         <property name="styleSheet">
-         <string notr="true">#maximaz {
-	image: url(:/titlebar/images/titlebar/maximize.png);
-	background-repeat: no-repeat;
-	background-color: #554d93;
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-top: 7px;
-	padding-bottom: 7px;
-	border: 1px solid #554d93
-}
-
-#maximaz:hover {
-	image: url(:/titlebar/images/titlebar/maximize-hover.png);
-	background-repeat: no-repeat;
-	background-color: #6d64ae;
-	border: #6d64ae;
-}</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>14</width>
-          <height>12</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="svernut">
-        <property name="styleSheet">
-         <string notr="true">#svernut {
+         <string notr="true">#rollup {
   	image: url(:/titlebar/images/titlebar/rollup.png);
 	background-color: #554d93;
 	padding-left: 5px;
@@ -153,7 +197,7 @@ font-size: 12px;</string>
 	border: 1px solid #554d93
 }
 
-#svernut:hover {
+#rollup:hover {
    image: url(:/titlebar/images/titlebar/rollup-hover.png);
     background-repeat: no-repeat;
 	background-color: #6d64ae;
@@ -165,14 +209,14 @@ font-size: 12px;</string>
         </property>
         <property name="iconSize">
          <size>
-          <width>14</width>
-          <height>13</height>
+          <width>20</width>
+          <height>10</height>
          </size>
         </property>
        </widget>
       </item>
-      <item row="0" column="4">
-       <widget class="QPushButton" name="close">
+      <item>
+       <widget class="QToolButton" name="close">
         <property name="styleSheet">
          <string notr="true">#close {
   	image: url(:/titlebar/images/titlebar/close.png);
@@ -197,32 +241,8 @@ font-size: 12px;</string>
         </property>
         <property name="iconSize">
          <size>
-          <width>14</width>
-          <height>12</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="pushButton_4">
-        <property name="styleSheet">
-         <string notr="true">#pushButton_4 {
-	qproperty-icon: url(:/titlebar/images/titlebar/icon.png);
-	background-color: #554d93;
-	padding-left: 10px;
-	padding-right: 2px;
-	padding-bottom: 4px;
-	padding-top: 4px;
-	border: 1px solid #554d93
-}</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>19</height>
+          <width>20</width>
+          <height>10</height>
          </size>
         </property>
        </widget>
@@ -230,211 +250,234 @@ font-size: 12px;</string>
      </layout>
     </item>
     <item row="1" column="0">
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="1" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>190</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>260</number>
+      </property>
+      <item>
+       <layout class="QVBoxLayout" name="mainMenuLayout">
         <property name="spacing">
-         <number>191</number>
+         <number>17</number>
         </property>
         <property name="leftMargin">
-         <number>0</number>
+         <number>60</number>
+        </property>
+        <property name="topMargin">
+         <number>58</number>
         </property>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout">
+         <widget class="QPushButton" name="add">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>70</height>
+           </size>
+          </property>
+          <property name="cursor">
+           <cursorShape>ArrowCursor</cursorShape>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">#add {
+	image: url(:/main/images/main/add.png);
+	border: none
+}
+
+#add:hover {
+	image: url(:/main/images/main/add-hover.png);
+	border: none;
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="edit">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>70</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">#edit {
+	image: url(:/main/images/main/edit.png);
+	border: none
+}
+
+#edit:hover {
+	image: url(:/main/images/main/edit-hover.png);
+	border: none;
+}</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="trashBasketLayout" stretch="0,0">
           <property name="spacing">
-           <number>16</number>
+           <number>0</number>
+          </property>
+          <property name="sizeConstraint">
+           <enum>QLayout::SetDefaultConstraint</enum>
           </property>
           <property name="leftMargin">
-           <number>65</number>
+           <number>0</number>
           </property>
           <property name="topMargin">
-           <number>58</number>
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
           </property>
           <item>
-           <widget class="QPushButton" name="pushButton_7">
+           <widget class="QPushButton" name="trashBasket">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Ignored">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>70</width>
               <height>70</height>
              </size>
             </property>
-            <property name="cursor">
-             <cursorShape>ArrowCursor</cursorShape>
+            <property name="mouseTracking">
+             <bool>false</bool>
             </property>
             <property name="styleSheet">
-             <string notr="true">#pushButton_7 {
-	image: url(:/images/Добавить.png);
+             <string notr="true">#trashBasket {
+	image: url(:/main/images/main/trash-basket.png);
 	border: none
 }
-#pushButton_7:hover {
-	image: url(:/images/Добавить2.png);
-	border: none;
-}
-#pushButton_7:pressed {
+
+#trashBasket:hover {
+	image: url(:/main/images/main/trash-basket-hover.png);
 	border: none;
 }</string>
             </property>
             <property name="text">
              <string/>
             </property>
+            <property name="icon">
+             <iconset theme="12">
+              <normaloff>.</normaloff>.</iconset>
+            </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_6">
-            <property name="minimumSize">
+           <widget class="QLabel" name="label_3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
              <size>
-              <width>70</width>
-              <height>70</height>
+              <width>32</width>
+              <height>43</height>
              </size>
             </property>
+            <property name="toolTipDuration">
+             <number>1</number>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
             <property name="styleSheet">
-             <string notr="true">#pushButton_6 {
-	image: url(:/images/Редактировать.png);
-	border: none
-}
-#pushButton_6:hover {
-	image: url(:/images/Редактировать2.png);
-	border: none;
-}</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <property name="sizeConstraint">
-             <enum>QLayout::SetDefaultConstraint</enum>
-            </property>
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QPushButton" name="pushButton_5">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Ignored">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>70</width>
-                <height>70</height>
-               </size>
-              </property>
-              <property name="mouseTracking">
-               <bool>false</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">#pushButton_5 {
-	image: url(:/images/Корзина.png);
-	border: none
-}
-#pushButton_5:hover {
-	image: url(:/images/Корзина2.png);
-	border: none;
-}</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset theme="12">
-                <normaloff>.</normaloff>.</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_3">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>34</width>
-                <height>43</height>
-               </size>
-              </property>
-              <property name="toolTipDuration">
-               <number>1</number>
-              </property>
-              <property name="autoFillBackground">
-               <bool>false</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">image: url(:/images/Корзинаиконка.png);
+             <string notr="true">image: url(:/main/images/main/trash-basket-item-count-background.png);
 color: white;</string>
-              </property>
-              <property name="text">
-               <string>12..</string>
-              </property>
-              <property name="textFormat">
-               <enum>Qt::RichText</enum>
-              </property>
-              <property name="scaledContents">
-               <bool>false</bool>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <property name="wordWrap">
-               <bool>false</bool>
-              </property>
-              <property name="margin">
-               <number>0</number>
-              </property>
-              <property name="indent">
-               <number>-1</number>
-              </property>
-              <property name="openExternalLinks">
-               <bool>false</bool>
-              </property>
-              <property name="textInteractionFlags">
-               <set>Qt::LinksAccessibleByMouse</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
             </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::MinimumExpanding</enum>
+            <property name="text">
+             <string>12..</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
+            <property name="textFormat">
+             <enum>Qt::RichText</enum>
             </property>
-           </spacer>
+            <property name="scaledContents">
+             <bool>false</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <property name="indent">
+             <number>-1</number>
+            </property>
+            <property name="openExternalLinks">
+             <bool>false</bool>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::LinksAccessibleByMouse</set>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
         <item>
-         <widget class="QStackedWidget" name="stackedWidget">
-          <widget class="QWidget" name="page"/>
-          <widget class="QWidget" name="page_2"/>
-         </widget>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QStackedWidget" name="stackedWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: 1px solid black;</string>
+        </property>
+        <widget class="QWidget" name="page"/>
+        <widget class="QWidget" name="page_2"/>
+       </widget>
       </item>
      </layout>
     </item>
