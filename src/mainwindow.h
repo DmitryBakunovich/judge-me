@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QDebug>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include <src/database/database.h>
 #include <src/stylehelper/stylehelper.h>
@@ -24,7 +26,6 @@ public:
     QPoint previousPosition() const;
 
 public slots:
-
     void setPreviousPosition(QPoint previousPosition);
 
 signals:
@@ -34,7 +35,6 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
-
 
 private:
     Ui::MainWindow *ui;

@@ -19,5 +19,18 @@
         <file>images/main/trash-basket.png</file>
         <file>images/main/trash-basket-hover.png</file>
         <file>images/main/trash-basket-item-count-background.png</file>
+        <file>images/main/help.png</file>
+        <file>images/main/search.png</file>
+        <file>images/main/administrative-protocol-1.png</file>
+        <file>images/main/administrative-protocol-2.png</file>
+        <file>images/main/administrative-protocol-3.png</file>
+        <file>images/main/administrative-protocol-4.png</file>
+        <file>images/main/criminal-protocol.png</file>
+        <file>images/main/help-hover.png</file>
+        <file>images/main/page-switch.png</file>
+        <file>images/main/search-hover.png</file>
+        <file>images/main/sort.png</file>
+        <file>images/main/sort-hover.png</file>
+        <file>images/main/page-switch-hover.png</file>
     </qresource>
 </RCC>
