@@ -30,7 +30,6 @@ public:
     void addField(QString fieldName, QString fieldReduction);
     void updateField(QString newFieldName, QString fieldReduction);
     void deleteField(QString fieldReduction);
-    void addLastTemplate();
 
 private:
     QSqlDatabase db;

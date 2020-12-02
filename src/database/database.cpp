@@ -111,11 +111,3 @@ void DataBase::deleteField(QString fieldReduction) {
     query.bindValue(":fieldReduction", fieldReduction);
     query.exec();
 }
-
-void DataBase::addLastTemplate() {
-    QSqlQuery query;
-    query.prepare("INSERT INTO judgment (article, fields) VALUES (:article, :fields)");
-    //query.bindValue(":article", article);
-    //query.bindValue(":fields", fields.toJson());
-    query.exec();
-}
