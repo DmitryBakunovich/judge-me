@@ -29,7 +29,7 @@ void DataBase::closeDataBase() {
     db.close();
 }
 
-QJsonArray DataBase::takeFieldsForJudgment() {
+QJsonArray DataBase::getFieldsForJudgment() {
     QSqlQuery query;
     query.exec("SELECT fields FROM judgment");
     query.first();
@@ -40,7 +40,7 @@ QJsonArray DataBase::takeFieldsForJudgment() {
     return jsonArray;
 }
 
-QMap<QString, QString> DataBase::takeAllFields() {
+QMap<QString, QString> DataBase::getAllFields() {
     QSqlQuery query;
     QMap<QString, QString> allFieldsMap;
     query.exec("SELECT fullname, reduction FROM field");
@@ -51,6 +51,19 @@ QMap<QString, QString> DataBase::takeAllFields() {
                     );
     }
     return allFieldsMap;
+}
+
+QJsonObject DataBase::getLatestTemplates() {
+    QSqlQuery query;
+    query.exec("SELECT date FROM last_template ORDER BY _id");
+    int i = 1;
+    QJsonObject jsonObject;
+    while (query.next() && i <= 220) {
+        auto json = QJsonDocument::fromJson(query.value(0).toByteArray());
+        jsonObject.insert(QString::number(i), json.object());
+        i++;
+    }
+    return jsonObject;
 }
 
 void DataBase::addJudgment(QString article, QJsonDocument fields) {
@@ -96,5 +109,13 @@ void DataBase::deleteField(QString fieldReduction) {
     QSqlQuery query;
     query.prepare("DELETE FROM field WHERE reduction = :fieldReduction");
     query.bindValue(":fieldReduction", fieldReduction);
+    query.exec();
+}
+
+void DataBase::addLastTemplate() {
+    QSqlQuery query;
+    query.prepare("INSERT INTO judgment (article, fields) VALUES (:article, :fields)");
+    //query.bindValue(":article", article);
+    //query.bindValue(":fields", fields.toJson());
     query.exec();
 }

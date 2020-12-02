@@ -21,14 +21,16 @@ public:
     explicit DataBase(QObject *parent = 0);
     ~DataBase();
     void connectToDataBase();
-    QJsonArray takeFieldsForJudgment();
-    QMap<QString, QString> takeAllFields();
+    QJsonArray getFieldsForJudgment();
+    QMap<QString, QString> getAllFields();
+    QJsonObject getLatestTemplates();
     void addJudgment(QString article, QJsonDocument fields);
     void updateJudgment(QString article, QJsonDocument fields);
     void deleteJudgment(QString article);
     void addField(QString fieldName, QString fieldReduction);
     void updateField(QString newFieldName, QString fieldReduction);
     void deleteField(QString fieldReduction);
+    void addLastTemplate();
 
 private:
     QSqlDatabase db;
