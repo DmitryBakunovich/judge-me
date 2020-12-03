@@ -65,7 +65,7 @@ void MainWindow::addPageButtons(int buttonsCount) {
         }
         ui->verticalLayout->addWidget(pageButton);
         pageButtonList.prepend(pageButton);
-        connect(pageButton, SIGNAL(clicked()), this, SLOT (test()));
+        connect(pageButton, SIGNAL(clicked()), this, SLOT (pageButtonClicked()));
     }
     QSpacerItem *lowerSpacer = new QSpacerItem(1,1, QSizePolicy::Fixed, QSizePolicy::Expanding);
     ui->verticalLayout->addItem(lowerSpacer);
@@ -86,9 +86,66 @@ void MainWindow::addLatestTemplates() {
     QJsonObject allLatestTemplates = db->getLatestTemplates();
     int templateCount = allLatestTemplates.size();
     addPageButtons(templateCount/45 + 1);
+    for (int i = 0; i < pageButtonList.size(); i++) {
+        QGridLayout *pageLayout = new QGridLayout();
+        pageLayout->setHorizontalSpacing(30);
+        pageLayout->setVerticalSpacing(7);
+        int row = 0;
+        int column = 0;
+        while(templateCount) {
+            QJsonObject jsonArray = allLatestTemplates.take(QString::number(templateCount)).toObject();
+            QPushButton *templateButton = new QPushButton();
+            templateButton->setMinimumSize(55, 65);
+            templateButton->setMaximumSize(55, 65);
+            if (jsonArray["is_criminal"].toBool()) {
+                templateButton->setStyleSheet(
+                            QString("border: none; image: url(:/main/images/main/criminal-protocol.png)")
+                            );
+            } else {
+                templateButton->setStyleSheet(
+                            QString(
+                                "border: none;"
+                                "image: url(:/main/images/main/administrative-protocol-%1.png)"
+                                ).arg(jsonArray["number_picture"].toInt())
+                            );
+            }
+            QLabel *templateName = new QLabel(jsonArray["fullname"].toString());
+            templateName->setAlignment(Qt::AlignHCenter);
+            templateName->setMaximumWidth(55);
+            templateName->setMinimumWidth(55);
+            QVBoxLayout *templateLayout = new QVBoxLayout();
+            templateLayout->addWidget(templateButton);
+            templateLayout->addWidget(templateName);
+            templateLayout->setSpacing(5);
+            pageLayout->addLayout(templateLayout, row, column);
+            templateCount -= 1;
+            if (column == 10) {
+                if (row == 3) {
+                    row = 0;
+                    column = 0;
+                    break;
+                }
+                else {
+                    column = 0;
+                    row += 1;
+                    continue;
+                }
+            }
+            column += 1;
+        }
+        pageLayout->setContentsMargins(0, 40, 0, 0);
+        QSpacerItem *downSpacer = new QSpacerItem(1,1, QSizePolicy::Fixed, QSizePolicy::Expanding);
+        pageLayout->addItem(downSpacer, 5, 0);
+        QWidget *pageWidget = new QWidget();
+        ui->stackedWidget->addWidget(pageWidget);
+        pageWidget->setLayout(pageLayout);
+        pageList.append(pageWidget);
+    }
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 void MainWindow::pageButtonClicked() {
+    qDebug() << true;
 }
 
 QPoint MainWindow::previousPosition() const {
