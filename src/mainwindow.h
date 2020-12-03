@@ -28,6 +28,9 @@ public:
 public slots:
     void setPreviousPosition(QPoint previousPosition);
 
+private slots:
+    void pageButtonClicked();
+
 signals:
     void previousPositionChanged(QPoint previousPosition);
 
@@ -43,5 +46,12 @@ private:
     // For change and resize window
     QPoint mousePreviousPosition;
     bool isMoveWindow = false;
+
+    // Add latest templates on main window
+    QList<QPushButton*> pageButtonList;
+    void addPageButtons(int buttonsCount);
+    QList<QWidget*> pageList;
+    void cleanStackedWidget();
+    void addLatestTemplates();
 };
 #endif // MAINWINDOW_H
