@@ -93,11 +93,11 @@ void MainWindow::addLatestTemplates() {
         int row = 0;
         int column = 0;
         while(templateCount) {
-            QJsonObject jsonArray = allLatestTemplates.take(QString::number(templateCount)).toObject();
+            QJsonObject json = allLatestTemplates.take(QString::number(templateCount)).toObject();
             QPushButton *templateButton = new QPushButton();
             templateButton->setMinimumSize(55, 65);
             templateButton->setMaximumSize(55, 65);
-            if (jsonArray["is_criminal"].toBool()) {
+            if (json["is_criminal"].toBool()) {
                 templateButton->setStyleSheet(
                             QString("border: none; image: url(:/main/images/main/criminal-protocol.png)")
                             );
@@ -106,10 +106,10 @@ void MainWindow::addLatestTemplates() {
                             QString(
                                 "border: none;"
                                 "image: url(:/main/images/main/administrative-protocol-%1.png)"
-                                ).arg(jsonArray["number_picture"].toInt())
+                                ).arg(json["number_picture"].toInt())
                             );
             }
-            QLabel *templateName = new QLabel(jsonArray["fullname"].toString());
+            QLabel *templateName = new QLabel(json["fullname"].toString());
             templateName->setAlignment(Qt::AlignHCenter);
             templateName->setMaximumWidth(55);
             templateName->setMinimumWidth(55);
@@ -145,7 +145,10 @@ void MainWindow::addLatestTemplates() {
 }
 
 void MainWindow::pageButtonClicked() {
-    qDebug() << true;
+    pageButtonList[ui->stackedWidget->currentIndex()]->setStyleSheet("image: url(:/main/images/main/page-switch.png); border:none;");
+    QPushButton *currentButton = (QPushButton*)this->sender();
+    ui->stackedWidget->setCurrentIndex(pageButtonList.indexOf(currentButton));
+    currentButton->setStyleSheet("image: url(:/main/images/main/page-switch-hover.png); border:none;");
 }
 
 QPoint MainWindow::previousPosition() const {
