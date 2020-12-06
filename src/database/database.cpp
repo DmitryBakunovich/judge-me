@@ -53,9 +53,18 @@ QMap<QString, QString> DataBase::getAllFields() {
     return allFieldsMap;
 }
 
-QJsonObject DataBase::getLatestTemplates() {
+QJsonObject DataBase::getLatestTemplates(QString sortBy) {
     QSqlQuery query;
-    query.exec("SELECT date FROM last_template ORDER BY _id");
+    if (sortBy == "is_criminal") {
+    query.prepare("SELECT data FROM last_template ORDER BY is_criminal DESC");
+    query.exec();
+    } else if (sortBy == "date") {
+        query.prepare("SELECT data FROM last_template ORDER BY date DESC");
+        query.exec();
+    } else {
+        query.prepare("SELECT data FROM last_template ORDER BY fullname DESC");
+        query.exec();
+    }
     int i = 1;
     QJsonObject jsonObject;
     while (query.next() && i <= 220) {
