@@ -23,7 +23,7 @@ public:
     void connectToDataBase();
     QJsonArray getFieldsForJudgment();
     QMap<QString, QString> getAllFields();
-    QJsonObject getLatestTemplates();
+    QJsonObject getLatestTemplates(QString sortBy);
     void addJudgment(QString article, QJsonDocument fields);
     void updateJudgment(QString article, QJsonDocument fields);
     void deleteJudgment(QString article);
