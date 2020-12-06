@@ -468,7 +468,7 @@ color: white;</string>
     <item row="1" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="topMargin">
-       <number>1</number>
+       <number>2</number>
       </property>
       <property name="rightMargin">
        <number>20</number>
@@ -499,8 +499,8 @@ color: white;</string>
         </property>
         <property name="minimumSize">
          <size>
-          <width>30</width>
-          <height>27</height>
+          <width>29</width>
+          <height>26</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -528,8 +528,8 @@ color: white;</string>
         </property>
         <property name="minimumSize">
          <size>
-          <width>30</width>
-          <height>27</height>
+          <width>29</width>
+          <height>26</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -540,7 +540,10 @@ color: white;</string>
 #sort:hover {
 	image: url(:/main/images/main/sort-hover.png);
 	border: none;
-}</string>
+}
+#sort::menu-indicator {
+	width: 0px;
+ }</string>
         </property>
         <property name="text">
          <string/>
@@ -557,8 +560,8 @@ color: white;</string>
         </property>
         <property name="minimumSize">
          <size>
-          <width>30</width>
-          <height>27</height>
+          <width>29</width>
+          <height>26</height>
          </size>
         </property>
         <property name="styleSheet">

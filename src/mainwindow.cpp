@@ -6,6 +6,7 @@
 #include <QScreen>
 #include <QDateTime>
 #include <QSignalMapper>
+#include <QMenu>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -49,6 +50,45 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     //qsrand(QTime::currentTime().msecsSinceStartOfDay());
 
     addLatestTemplates();
+    addMenuForSort();
+}
+
+void MainWindow::addMenuForSort() {
+    auto menu = new QMenu(this);
+    menu->installEventFilter(this);
+    ui->sort->setMenu(menu);
+    menu->setMaximumWidth(120);
+
+    QAction *action = new QAction("СОРТИРОВАТЬ ПО:");
+    menu->addAction(action);
+    action->setDisabled(true);
+    QAction *action2 = new QAction("ИМЯ");
+    menu->addAction(action2);
+    connect(action2, SIGNAL(triggered()), this, SLOT (sortActionTriggired()));
+    QAction *action3 = new QAction("ДАТА");
+    menu->addAction(action3);
+    connect(action3, SIGNAL(triggered()), this, SLOT (sortActionTriggired()));
+    QAction *action4 = new QAction("ПРИОРИТЕТ");
+    menu->addAction(action4);
+    connect(action4, SIGNAL(triggered()), this, SLOT (sortActionTriggired()));
+    menu->setWindowFlag(Qt::NoDropShadowWindowHint);
+    menu->setStyleSheet(StyleHelper::getMenuStyleSheet());
+}
+
+bool MainWindow::eventFilter(QObject * obj, QEvent *event) {
+    if (event->type() == QEvent::Show && obj == ui->sort->menu())
+    {
+        int menu_x_pos = ui->sort->menu()->pos().x();
+        int menu_width = ui->sort->menu()->size().width();
+        int button_width = ui->sort->size().width();
+
+        QPoint pos = QPoint(menu_x_pos - menu_width/2 + button_width/2,
+                            ui->sort->menu()->pos().y());
+
+        ui->sort->menu()->move(pos);
+        return true;
+    }
+    return false;
 }
 
 void MainWindow::addPageButtons(int buttonsCount) {
@@ -81,19 +121,16 @@ void MainWindow::cleanStackedWidget() {
     }
 }
 
-void MainWindow::addLatestTemplates() {
-    cleanStackedWidget();
-    QJsonObject allLatestTemplates = db->getLatestTemplates();
-    int templateCount = allLatestTemplates.size();
-    addPageButtons(templateCount/45 + 1);
+void MainWindow::createLatestTemplate(QJsonObject sortedJson) {
+    int j = 1;
     for (int i = 0; i < pageButtonList.size(); i++) {
         QGridLayout *pageLayout = new QGridLayout();
         pageLayout->setHorizontalSpacing(30);
         pageLayout->setVerticalSpacing(7);
         int row = 0;
         int column = 0;
-        while(templateCount) {
-            QJsonObject json = allLatestTemplates.take(QString::number(templateCount)).toObject();
+        while(j <= templateCount) {
+            QJsonObject json = sortedJson.take(QString::number(j)).toObject();
             QPushButton *templateButton = new QPushButton();
             templateButton->setMinimumSize(55, 65);
             templateButton->setMaximumSize(55, 65);
@@ -118,7 +155,7 @@ void MainWindow::addLatestTemplates() {
             templateLayout->addWidget(templateName);
             templateLayout->setSpacing(5);
             pageLayout->addLayout(templateLayout, row, column);
-            templateCount -= 1;
+            j++;
             if (column == 10) {
                 if (row == 3) {
                     row = 0;
@@ -139,16 +176,40 @@ void MainWindow::addLatestTemplates() {
         QWidget *pageWidget = new QWidget();
         ui->stackedWidget->addWidget(pageWidget);
         pageWidget->setLayout(pageLayout);
-        pageList.append(pageWidget);
+    }
+}
+
+void MainWindow::addLatestTemplates() {
+    cleanStackedWidget();
+    QListIterator<QString> item({"date", "fullname", "is_criminal"});
+    templateCount = db->getLatestTemplates("date").size();
+    addPageButtons(templateCount/45 + 1);
+    while (item.hasNext()) {
+        createLatestTemplate(db->getLatestTemplates(item.next()));
     }
     ui->stackedWidget->setCurrentIndex(0);
 }
 
 void MainWindow::pageButtonClicked() {
-    pageButtonList[ui->stackedWidget->currentIndex()]->setStyleSheet("image: url(:/main/images/main/page-switch.png); border:none;");
+    pageButtonList[ui->stackedWidget->currentIndex() - buttonDifference]->setStyleSheet("image: url(:/main/images/main/page-switch.png); border:none;");
     QPushButton *currentButton = (QPushButton*)this->sender();
-    ui->stackedWidget->setCurrentIndex(pageButtonList.indexOf(currentButton));
+    ui->stackedWidget->setCurrentIndex(pageButtonList.indexOf(currentButton) + buttonDifference);
     currentButton->setStyleSheet("image: url(:/main/images/main/page-switch-hover.png); border:none;");
+}
+
+void MainWindow::sortActionTriggired() {
+    QAction *currentAction = (QAction*)this->sender();
+    if (currentAction->text() == "ДАТА") {
+        buttonDifference = 0;
+        ui->stackedWidget->setCurrentIndex(0);
+    } else if (currentAction->text() == "ИМЯ") {
+        buttonDifference = pageButtonList.size();
+        ui->stackedWidget->setCurrentIndex(buttonDifference);
+    } else if (currentAction->text() == "ПРИОРИТЕТ") {
+        buttonDifference = pageButtonList.size() * 2;
+        ui->stackedWidget->setCurrentIndex(buttonDifference);
+    }
+    pageButtonList[0]->setStyleSheet("image: url(:/main/images/main/page-switch-hover.png); border:none;");
 }
 
 QPoint MainWindow::previousPosition() const {

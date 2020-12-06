@@ -30,6 +30,7 @@ public slots:
 
 private slots:
     void pageButtonClicked();
+    void sortActionTriggired();
 
 signals:
     void previousPositionChanged(QPoint previousPosition);
@@ -38,6 +39,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    bool eventFilter(QObject * obj, QEvent *event);
 
 private:
     Ui::MainWindow *ui;
@@ -47,11 +49,17 @@ private:
     QPoint mousePreviousPosition;
     bool isMoveWindow = false;
 
-    // Add latest templates on main window
+    // Lates templates
     QList<QPushButton*> pageButtonList;
+    int templateCount = 0;
+    int buttonDifference = 0;
     void addPageButtons(int buttonsCount);
-    QList<QWidget*> pageList;
     void cleanStackedWidget();
     void addLatestTemplates();
+    void createLatestTemplate(QJsonObject json);
+
+    // Sorted latest template
+    void addMenuForSort();
+
 };
 #endif // MAINWINDOW_H
