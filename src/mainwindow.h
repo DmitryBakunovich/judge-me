@@ -6,9 +6,16 @@
 #include <QDebug>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QToolButton>
+#include <QGraphicsDropShadowEffect>
+#include <QScreen>
+#include <QDateTime>
+#include <QMenu>
+#include <QDialog>
 
 #include <src/database/database.h>
 #include <src/stylehelper/stylehelper.h>
+#include <src/courtcasewindow/courtcasewindow.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,7 +28,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     QPoint previousPosition() const;
 
@@ -31,6 +38,7 @@ public slots:
 private slots:
     void pageButtonClicked();
     void sortActionTriggired();
+    void addButtonClicked();
 
 signals:
     void previousPositionChanged(QPoint previousPosition);
@@ -54,12 +62,13 @@ private:
     int templateCount = 0;
     int buttonDifference = 0;
     void addPageButtons(int buttonsCount);
-    void cleanStackedWidget();
+    void clearStackedWidget();
     void addLatestTemplates();
     void createLatestTemplate(QJsonObject json);
 
     // Sorted latest template
     void addMenuForSort();
+    CourtCaseWindow *courtCaseWindow;
 
 };
 #endif // MAINWINDOW_H

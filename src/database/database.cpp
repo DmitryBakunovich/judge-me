@@ -29,15 +29,27 @@ void DataBase::closeDataBase() {
     db.close();
 }
 
-QJsonArray DataBase::getFieldsForJudgment() {
+QJsonArray DataBase::getFieldsForJudgment(QString article) {
     QSqlQuery query;
-    query.exec("SELECT fields FROM judgment");
+    query.prepare("SELECT fields FROM judgment WHERE article = :article");
+    query.bindValue(":article", article);
+    query.exec();
     query.first();
     QByteArray jsonBuffer = query.value(0).toByteArray();
     auto json = QJsonDocument::fromJson(jsonBuffer);
     QJsonObject jsonObject = json.object();
     QJsonArray jsonArray = jsonObject["fields_array"].toArray();
     return jsonArray;
+}
+
+QList<QString> DataBase::getAllJudgment() {
+    QSqlQuery query;
+    QList<QString> allJudgmentList;
+    query.exec("SELECT article FROM judgment");
+    while (query.next()) {
+        allJudgmentList.append(query.value(0).toString());
+    }
+    return allJudgmentList;
 }
 
 QMap<QString, QString> DataBase::getAllFields() {
@@ -111,7 +123,6 @@ void DataBase::updateField(QString newFieldName, QString fieldReduction) {
     query.prepare("UPDATE field SET fullname = :fieldName WHERE reduction = :fieldReduction");
     query.bindValue(":fieldName", newFieldName);
     query.bindValue(":fieldReduction", fieldReduction);
-    qDebug() << query.exec();
 }
 
 void DataBase::deleteField(QString fieldReduction) {
