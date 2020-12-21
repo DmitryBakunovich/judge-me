@@ -20,14 +20,19 @@ class DataBase : public QObject
 public:
     explicit DataBase(QObject *parent = 0);
     ~DataBase();
+
     void connectToDataBase();
+
     QJsonArray getFieldsForJudgment(QString article);
     QList<QString> getAllJudgment();
     QMap<QString, QString> getAllFields();
     QJsonObject getLatestTemplates(QString sortBy);
+    QString getTextTemplate(QString article);
+
     void addJudgment(QString article, QJsonDocument fields);
     void updateJudgment(QString article, QJsonDocument fields);
     void deleteJudgment(QString article);
+
     void addField(QString fieldName, QString fieldReduction);
     void updateField(QString newFieldName, QString fieldReduction);
     void deleteField(QString fieldReduction);

@@ -39,7 +39,6 @@
         <file>images/courtcasewindow/edit.png</file>
         <file>images/courtcasewindow/first-page-button.png</file>
         <file>images/courtcasewindow/first-page-button-switch.png</file>
-        <file>images/courtcasewindow/first-window.png</file>
         <file>images/courtcasewindow/left-slide.png</file>
         <file>images/courtcasewindow/ok.png</file>
         <file>images/courtcasewindow/right-slide.png</file>
@@ -48,5 +47,12 @@
         <file>images/courtcasewindow/second-window.png</file>
         <file>images/courtcasewindow/page-button.png</file>
         <file>images/courtcasewindow/page-button-switch.png</file>
+        <file>images/courtcasewindow/close-hover.png</file>
+        <file>images/courtcasewindow/combobox-button-hover.png</file>
+        <file>images/courtcasewindow/edit-hover.png</file>
+        <file>images/courtcasewindow/left-slide-hover.png</file>
+        <file>images/courtcasewindow/ok-hover.png</file>
+        <file>images/courtcasewindow/right-slide-hover.png</file>
+        <file>images/courtcasewindow/first-window.png</file>
     </qresource>
 </RCC>

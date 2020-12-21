@@ -3,7 +3,14 @@
 
 #include <QDialog>
 #include <QLineEdit>
+#include <QVBoxLayout>
+#include <QFile>
+#include <QTextStream>
+#include <QCoreApplication>
+#include <QDir>
+
 #include <src/database/database.h>
+#include <src/stylehelper/stylehelper.h>
 
 namespace Ui {
     class CourtCaseWindow;
@@ -31,11 +38,18 @@ private:
 
     void changeMainPageStyle();
 
-    void addPageButtons(int buttonsCount);
+    void makePageButtons(int buttonsCount);
     void clearButtonsLayout();
     void clearStackedWidget();
     QList<QPushButton*> pageButtonList;
     int buttonDifference = 0;
+
+    void createCourtCase();
+    bool checkFillingFields();
+    QList<QLineEdit*> fieldsList;
+
+    QMap<QString, QString> allFields;
+    void createFile(QString text);
 };
 
 #endif // COURTCASEWINDOW_H

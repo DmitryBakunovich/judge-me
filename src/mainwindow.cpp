@@ -44,14 +44,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     addLatestTemplates();
     addMenuForSort();
-    courtCaseWindow = new CourtCaseWindow(db, this);
     connect(ui->add, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
 }
 
 void MainWindow::addButtonClicked(){
-    courtCaseWindow->setWindowFlags(Qt::Dialog);
-    courtCaseWindow->setWindowFlags(Qt::FramelessWindowHint);
-    courtCaseWindow->setAttribute(Qt::WA_TranslucentBackground);
+    courtCaseWindow = new CourtCaseWindow(db, this);
+
     courtCaseWindow->show();
     courtCaseWindow->setGeometry(0, 29, this->width(), this->height()-29);
 }

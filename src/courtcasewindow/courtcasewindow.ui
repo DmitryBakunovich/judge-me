@@ -51,13 +51,13 @@
         <property name="minimumSize">
          <size>
           <width>549</width>
-          <height>350</height>
+          <height>401</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>549</width>
-          <height>350</height>
+          <height>401</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -104,6 +104,10 @@
              <property name="styleSheet">
               <string notr="true">#close {
 	image: url(:/courtcasewindow/images/courtcasewindow/close.png);
+	border: none
+}
+#close:hover {
+	image: url(:/courtcasewindow/images/courtcasewindow/close-hover.png);
 	border: none
 }</string>
              </property>
@@ -243,7 +247,7 @@ border: none
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_5">
                <property name="spacing">
-                <number>5</number>
+                <number>6</number>
                </property>
                <property name="topMargin">
                 <number>1</number>
@@ -282,12 +286,54 @@ border: none
 color: #8da3c3;</string>
                    </property>
                    <property name="text">
-                    <string>Выберите шаблон</string>
+                    <string>Выберите шаблон и введите название файла</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
                    </property>
                   </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_4">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QLineEdit" name="filenameEdit">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">background-color: #afc0da;
+border-radius: 20px;
+font-size: 14px;
+padding-left: 10px;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_9">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Fixed</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </item>
@@ -330,6 +376,10 @@ QComboBox::drop-down {
 	margin-left: 10px;
 	image: url(:/courtcasewindow/images/courtcasewindow/combobox-button.png);
 }
+QComboBox::drop-down:hover {
+	image: url(:/courtcasewindow/images/courtcasewindow/combobox-button-hover.png);
+}
+
 QComboBox:item {
        padding-left: 20px;  /* move text right to make room for tick mark */
 }
@@ -353,7 +403,7 @@ QComboBox QListView {
                   </widget>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_2">
+                  <widget class="QPushButton" name="edit">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -367,8 +417,14 @@ QComboBox QListView {
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">image: url(:/courtcasewindow/images/courtcasewindow/редактирование.png);
-border: none;</string>
+                    <string notr="true">#edit {
+	image: url(:/courtcasewindow/images/courtcasewindow/edit.png);
+	border: none;
+}
+#edit:hover {
+	image: url(:/courtcasewindow/images/courtcasewindow/edit-hover.png);
+	border: none;
+}</string>
                    </property>
                    <property name="text">
                     <string/>
@@ -435,6 +491,10 @@ border: none;</string>
              <property name="styleSheet">
               <string notr="true">#okeyButtun {
 	image:  url(:/courtcasewindow/images/courtcasewindow/ok.png);
+	border: none
+}
+#okeyButtun:hover {
+	image:  url(:/courtcasewindow/images/courtcasewindow/ok-hover.png);
 	border: none
 }</string>
              </property>

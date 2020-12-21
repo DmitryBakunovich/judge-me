@@ -1,11 +1,13 @@
 #include "courtcasewindow.h"
 #include "ui_courtcasewindow.h"
 
-#include <QDebug>
-#include <QVBoxLayout>
-
 CourtCaseWindow::CourtCaseWindow(DataBase *dbMainWindow, QWidget *parent) : QDialog(parent), ui(new Ui::CourtCaseWindow) {
     ui->setupUi(this);
+
+    this->setWindowFlags(Qt::FramelessWindowHint);
+    this->setAttribute(Qt::WA_TranslucentBackground);
+    this->setAttribute(Qt::WA_DeleteOnClose);
+
     connect(ui->close, &QToolButton::clicked, this, &QWidget::close);
     connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeComboBox(int)));
 
@@ -17,36 +19,23 @@ CourtCaseWindow::CourtCaseWindow(DataBase *dbMainWindow, QWidget *parent) : QDia
     for(auto it: db->getAllJudgment()) {
         ui->comboBox->addItem(it);
     }
+
+    allFields = db->getAllFields();
 }
 
 void CourtCaseWindow::changeMainPageStyle() {
     if (ui->stackedWidget->currentIndex() == 0) {
-        ui->mainWidget->setStyleSheet(
-                    "#mainWidget {"
-                    "image: url(:/courtcasewindow/images/courtcasewindow/first-window.png);"
-                    "}");
-        ui->mainWidget->setMinimumSize(549, 350);
-        ui->mainWidget->setMaximumSize(549, 350);
+        ui->mainWidget->setStyleSheet(StyleHelper::getFirstPageStyle());
+        ui->mainWidget->setMinimumSize(549, 401);
+        ui->mainWidget->setMaximumSize(549, 401);
     } else {
-        ui->mainWidget->setStyleSheet(
-                    "#mainWidget {"
-                    "image: url(:/courtcasewindow/images/courtcasewindow/second-window.png);"
-                    "}");
-        ui->firstPageButton->setStyleSheet(
-                        "#firstPageButton {"
-                        "image: url(:/courtcasewindow/images/courtcasewindow/first-page-button-switch.png);"
-                        "border: none;"
-                        "}");
-        ui->secondPageButton->setStyleSheet(
-                    "#secondPageButton {"
-                    "image: url(:/courtcasewindow/images/courtcasewindow/second-page-button-switch.png);"
-                    "border: none;"
-                    "}");
+        ui->mainWidget->setStyleSheet(StyleHelper::getSecondPageStyle());
+        ui->firstPageButton->setStyleSheet(StyleHelper::getFirstPageButtonStyle());
+        ui->secondPageButton->setStyleSheet(StyleHelper::getSecondPageButtonStyle());
         ui->secondPageButton->setMinimumSize(53, 53);
         ui->mainWidget->setMinimumSize(549, 614);
         ui->mainWidget->setMaximumSize(549, 614);
     }
-
 }
 
 void CourtCaseWindow::firstPageClicked() {
@@ -59,13 +48,59 @@ void CourtCaseWindow::secondPageClicked() {
     changeMainPageStyle();
 }
 
+bool CourtCaseWindow::checkFillingFields() {
+    bool isEmptyField = false;
+    int firstEmptyIndex = 0;
+    for (auto item: fieldsList) {
+        if (item->text() == "") {
+            item->setStyleSheet(StyleHelper::getEmptyFieldStyle());
+            if (!isEmptyField) {
+                firstEmptyIndex = fieldsList.indexOf(item);
+                ui->stackedWidget_2->setCurrentIndex(firstEmptyIndex/6);
+            }
+            isEmptyField = true;
+        } else {
+            item->setStyleSheet(StyleHelper::getFillFieldStyle());
+        }
+    }
+    return isEmptyField;
+}
+
+void CourtCaseWindow::createFile(QString text) {
+    QString pathToLastFileDir = QCoreApplication::applicationDirPath() + "/lastfile/";
+    QDir lastFileDir = pathToLastFileDir;
+    if (!lastFileDir.exists()) {
+        lastFileDir.mkdir(pathToLastFileDir);
+    }
+    QString filename(ui->filenameEdit->text() + " " + ui->comboBox->currentText());
+    QFile file(pathToLastFileDir + filename + ".docx");
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        QTextStream fileout(&file);
+        fileout << text;
+        file.close();
+    }
+}
+
+void CourtCaseWindow::createCourtCase() {
+    if (!checkFillingFields()) {
+        QString text = db->getTextTemplate(ui->comboBox->currentText());
+        for (auto item: fieldsList) {
+            text.replace(allFields.key(item->placeholderText()), item->text());
+        }
+        createFile(text);
+        this->close();
+    }
+}
+
 void CourtCaseWindow::okeyButtonClicked() {
-    if (ui->stackedWidget->currentIndex() == 0 && ui->comboBox->currentText() != "")  {
+    if (ui->stackedWidget->currentIndex() == 0 &&
+        ui->comboBox->currentText() != "" &&
+        ui->filenameEdit->text() != "") {
         ui->secondPageButton->setEnabled(true);
         ui->stackedWidget->setCurrentIndex(1);
         changeMainPageStyle();
     } else if (ui->stackedWidget->currentIndex() == 1) {
-
+        createCourtCase();
     }
 }
 
@@ -77,12 +112,12 @@ void CourtCaseWindow::clearStackedWidget() {
     }
 }
 
-void CourtCaseWindow::addPageButtons(int buttonsCount) {
+void CourtCaseWindow::makePageButtons(int buttonsCount) {
     QSpacerItem *leftSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Fixed);
     ui->buttonLayout->addItem(leftSpacer);
 
     QPushButton *slideLeftButton = new QPushButton();
-    slideLeftButton->setStyleSheet("image: url(:/courtcasewindow/images/courtcasewindow/left-slide.png); border: none;");
+    slideLeftButton->setStyleSheet(StyleHelper::getLeftSlideStyle());
     slideLeftButton->setMinimumSize(12, 12);
     slideLeftButton->setMaximumSize(12, 12);
     ui->buttonLayout->addWidget(slideLeftButton);
@@ -95,9 +130,13 @@ void CourtCaseWindow::addPageButtons(int buttonsCount) {
         pageButton->setMinimumSize(8, 8);
         pageButton->setMaximumSize(8, 8);
         if (i == 0) {
-            pageButton->setStyleSheet("image: url(:/courtcasewindow/images/courtcasewindow/page-button-switch.png); border:none;");
+            pageButton->setStyleSheet(
+                        "image: url(:/courtcasewindow/images/courtcasewindow/page-button-switch.png);"
+                        "border:none;");
         } else {
-            pageButton->setStyleSheet("image: url(:/courtcasewindow/images/courtcasewindow/page-button.png); border:none;");
+            pageButton->setStyleSheet(
+                        "image: url(:/courtcasewindow/images/courtcasewindow/page-button.png);"
+                        "border:none;");
         }
         ui->buttonLayout->addWidget(pageButton);
         if (i >= 3) {
@@ -108,7 +147,7 @@ void CourtCaseWindow::addPageButtons(int buttonsCount) {
     }
 
     QPushButton *slideRightButton = new QPushButton();
-    slideRightButton->setStyleSheet("image: url(:/courtcasewindow/images/courtcasewindow/right-slide.png); border: none;");
+    slideRightButton->setStyleSheet(StyleHelper::getRightSlideStyle());
     slideRightButton->setMinimumSize(12, 12);
     slideRightButton->setMaximumSize(12, 12);
     ui->buttonLayout->addWidget(slideRightButton);
@@ -134,7 +173,9 @@ void CourtCaseWindow::changeComboBox(int index) {
     QJsonArray fieldsArray = db->getFieldsForJudgment(caseName);
     clearStackedWidget();
     clearButtonsLayout();
-    addPageButtons(fieldsArray.size()/6 + 1);
+    pageButtonList.clear();
+    fieldsList.clear();
+    makePageButtons(fieldsArray.size()/6 + 1);
     for (int i = 0; i < pageButtonList.size(); i++) {
         QVBoxLayout *pageLayout = new QVBoxLayout();
         pageLayout->setSpacing(10);
@@ -142,13 +183,12 @@ void CourtCaseWindow::changeComboBox(int index) {
             if (!fieldsArray.isEmpty()) {
                 QLineEdit *fieldEdit = new QLineEdit();
                 fieldEdit->setMinimumHeight(40);
-                fieldEdit->setStyleSheet("background-color: #afc0da;"
-                                         "border: none;"
-                                         "border-radius: 20px;"
-                                         "font-size: 14px;"
-                                         "padding-left: 10px;");
-                fieldEdit->setPlaceholderText(fieldsArray.first().toString());
+                fieldEdit->setStyleSheet(StyleHelper::getFieldStyle());
+                fieldEdit->setPlaceholderText(
+                            allFields[fieldsArray.first().toString()]
+                        );
                 fieldsArray.pop_front();
+                fieldsList.append(fieldEdit);
                 pageLayout->addWidget(fieldEdit);
             }
             else {
@@ -166,11 +206,15 @@ void CourtCaseWindow::changeComboBox(int index) {
 
 void CourtCaseWindow::pageButtonClicked() {
     for (int i = 1; i < pageButtonList.size() - 1; i++) {
-        pageButtonList[i]->setStyleSheet("image: url(:/courtcasewindow/images/courtcasewindow/page-button.png); border:none;");
+        pageButtonList[i]->setStyleSheet(
+                    "image: url(:/courtcasewindow/images/courtcasewindow/page-button.png);"
+                    "border:none;");
     }
     QPushButton *currentButton = (QPushButton*)this->sender();
     ui->stackedWidget_2->setCurrentIndex(pageButtonList.indexOf(currentButton) - 1);
-    currentButton->setStyleSheet("image: url(:/courtcasewindow/images/courtcasewindow/page-button-switch.png); border:none;");
+    currentButton->setStyleSheet(
+                "image: url(:/courtcasewindow/images/courtcasewindow/page-button-switch.png);"
+                "border:none;");
 }
 
 void CourtCaseWindow::slideButtonClicked() {

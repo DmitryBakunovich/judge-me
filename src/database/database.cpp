@@ -1,5 +1,7 @@
 #include "src/database/database.h"
 
+#include <QDebug>
+
 DataBase::DataBase(QObject *parent) : QObject(parent) {
 
 }
@@ -58,8 +60,8 @@ QMap<QString, QString> DataBase::getAllFields() {
     query.exec("SELECT fullname, reduction FROM field");
     while (query.next()) {
         allFieldsMap.insert(
-                    query.value(0).toString(),
-                    query.value(1).toString()
+                    query.value(1).toString(),
+                    query.value(0).toString()
                     );
     }
     return allFieldsMap;
@@ -85,6 +87,15 @@ QJsonObject DataBase::getLatestTemplates(QString sortBy) {
         i++;
     }
     return jsonObject;
+}
+
+QString DataBase::getTextTemplate(QString article) {
+    QSqlQuery query;
+    query.prepare("SELECT text FROM judgment WHERE article = :article");
+    query.bindValue(":article", article);
+    query.exec();
+    query.first();
+    return query.value(0).toString();
 }
 
 void DataBase::addJudgment(QString article, QJsonDocument fields) {
