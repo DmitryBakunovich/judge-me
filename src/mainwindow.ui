@@ -285,9 +285,6 @@ background-color: #554d93;
         </item>
         <item>
          <widget class="QPushButton" name="edit">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>

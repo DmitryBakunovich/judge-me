@@ -1,5 +1,7 @@
 #include "src/database/database.h"
 
+#include <QDebug>
+
 DataBase::DataBase(QObject *parent) : QObject(parent) {
 
 }
@@ -29,9 +31,11 @@ void DataBase::closeDataBase() {
     db.close();
 }
 
-QJsonArray DataBase::getFieldsForJudgment() {
+QJsonArray DataBase::getFieldsForJudgment(QString article) {
     QSqlQuery query;
-    query.exec("SELECT fields FROM judgment");
+    query.prepare("SELECT fields FROM judgment WHERE article = :article");
+    query.bindValue(":article", article);
+    query.exec();
     query.first();
     QByteArray jsonBuffer = query.value(0).toByteArray();
     auto json = QJsonDocument::fromJson(jsonBuffer);
@@ -40,14 +44,24 @@ QJsonArray DataBase::getFieldsForJudgment() {
     return jsonArray;
 }
 
+QList<QString> DataBase::getAllJudgment() {
+    QSqlQuery query;
+    QList<QString> allJudgmentList;
+    query.exec("SELECT article FROM judgment");
+    while (query.next()) {
+        allJudgmentList.append(query.value(0).toString());
+    }
+    return allJudgmentList;
+}
+
 QMap<QString, QString> DataBase::getAllFields() {
     QSqlQuery query;
     QMap<QString, QString> allFieldsMap;
     query.exec("SELECT fullname, reduction FROM field");
     while (query.next()) {
         allFieldsMap.insert(
-                    query.value(0).toString(),
-                    query.value(1).toString()
+                    query.value(1).toString(),
+                    query.value(0).toString()
                     );
     }
     return allFieldsMap;
@@ -73,6 +87,15 @@ QJsonObject DataBase::getLatestTemplates(QString sortBy) {
         i++;
     }
     return jsonObject;
+}
+
+QString DataBase::getTextTemplate(QString article) {
+    QSqlQuery query;
+    query.prepare("SELECT text FROM judgment WHERE article = :article");
+    query.bindValue(":article", article);
+    query.exec();
+    query.first();
+    return query.value(0).toString();
 }
 
 void DataBase::addJudgment(QString article, QJsonDocument fields) {
@@ -111,7 +134,6 @@ void DataBase::updateField(QString newFieldName, QString fieldReduction) {
     query.prepare("UPDATE field SET fullname = :fieldName WHERE reduction = :fieldReduction");
     query.bindValue(":fieldName", newFieldName);
     query.bindValue(":fieldReduction", fieldReduction);
-    qDebug() << query.exec();
 }
 
 void DataBase::deleteField(QString fieldReduction) {

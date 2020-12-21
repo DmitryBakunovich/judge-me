@@ -1,13 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QToolButton>
-#include <QGraphicsDropShadowEffect>
-#include <QScreen>
-#include <QDateTime>
-#include <QSignalMapper>
-#include <QMenu>
-
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
@@ -51,40 +44,52 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     addLatestTemplates();
     addMenuForSort();
+    connect(ui->add, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
+}
+
+void MainWindow::addButtonClicked(){
+    courtCaseWindow = new CourtCaseWindow(db, this);
+
+    courtCaseWindow->show();
+    courtCaseWindow->setGeometry(0, 29, this->width(), this->height()-29);
 }
 
 void MainWindow::addMenuForSort() {
-    auto menu = new QMenu(this);
-    menu->installEventFilter(this);
-    ui->sort->setMenu(menu);
-    menu->setMaximumWidth(120);
+    auto sortMenu = new QMenu(this);
+    sortMenu->installEventFilter(this);
+    ui->sort->setMenu(sortMenu);
+    sortMenu->setMaximumWidth(120);
 
     QAction *action = new QAction("СОРТИРОВАТЬ ПО:");
-    menu->addAction(action);
+    sortMenu->addAction(action);
     action->setDisabled(true);
+
     QAction *action2 = new QAction("ИМЯ");
-    menu->addAction(action2);
+    sortMenu->addAction(action2);
     connect(action2, SIGNAL(triggered()), this, SLOT (sortActionTriggired()));
+
     QAction *action3 = new QAction("ДАТА");
-    menu->addAction(action3);
+    sortMenu->addAction(action3);
     connect(action3, SIGNAL(triggered()), this, SLOT (sortActionTriggired()));
+
     QAction *action4 = new QAction("ПРИОРИТЕТ");
-    menu->addAction(action4);
+
+    sortMenu->addAction(action4);
     connect(action4, SIGNAL(triggered()), this, SLOT (sortActionTriggired()));
-    menu->setWindowFlag(Qt::NoDropShadowWindowHint);
-    menu->setStyleSheet(StyleHelper::getMenuStyleSheet());
+    sortMenu->setWindowFlag(Qt::NoDropShadowWindowHint);
+    sortMenu->setStyleSheet(StyleHelper::getMenuStyleSheet());
 }
 
 bool MainWindow::eventFilter(QObject * obj, QEvent *event) {
-    if (event->type() == QEvent::Show && obj == ui->sort->menu())
-    {
+    if (event->type() == QEvent::Show && obj == ui->sort->menu()) {
         int menu_x_pos = ui->sort->menu()->pos().x();
         int menu_width = ui->sort->menu()->size().width();
         int button_width = ui->sort->size().width();
 
-        QPoint pos = QPoint(menu_x_pos - menu_width/2 + button_width/2,
-                            ui->sort->menu()->pos().y());
-
+        QPoint pos = QPoint(
+                    menu_x_pos - menu_width/2 + button_width/2,
+                    ui->sort->menu()->pos().y()
+                    );
         ui->sort->menu()->move(pos);
         return true;
     }
@@ -112,7 +117,7 @@ void MainWindow::addPageButtons(int buttonsCount) {
     ui->verticalLayout->setSpacing(7);
 }
 
-void MainWindow::cleanStackedWidget() {
+void MainWindow::clearStackedWidget() {
     for(int i = ui->stackedWidget->count(); i >= 0; i--)
     {
         QWidget* widget = ui->stackedWidget->widget(i);
@@ -180,7 +185,7 @@ void MainWindow::createLatestTemplate(QJsonObject sortedJson) {
 }
 
 void MainWindow::addLatestTemplates() {
-    cleanStackedWidget();
+    clearStackedWidget();
     QListIterator<QString> item({"date", "fullname", "is_criminal"});
     templateCount = db->getLatestTemplates("date").size();
     addPageButtons(templateCount/45 + 1);
@@ -208,6 +213,10 @@ void MainWindow::sortActionTriggired() {
     } else if (currentAction->text() == "ПРИОРИТЕТ") {
         buttonDifference = pageButtonList.size() * 2;
         ui->stackedWidget->setCurrentIndex(buttonDifference);
+    }
+
+    for (auto item: pageButtonList) {
+        item->setStyleSheet("image: url(:/main/images/main/page-switch.png); border:none;");
     }
     pageButtonList[0]->setStyleSheet("image: url(:/main/images/main/page-switch-hover.png); border:none;");
 }
