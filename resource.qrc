@@ -36,7 +36,6 @@
     <qresource prefix="/courtcasewindow">
         <file>images/courtcasewindow/close.png</file>
         <file>images/courtcasewindow/combobox-button.png</file>
-        <file>images/courtcasewindow/edit.png</file>
         <file>images/courtcasewindow/first-page-button.png</file>
         <file>images/courtcasewindow/first-page-button-switch.png</file>
         <file>images/courtcasewindow/left-slide.png</file>
@@ -49,10 +48,18 @@
         <file>images/courtcasewindow/page-button-switch.png</file>
         <file>images/courtcasewindow/close-hover.png</file>
         <file>images/courtcasewindow/combobox-button-hover.png</file>
-        <file>images/courtcasewindow/edit-hover.png</file>
         <file>images/courtcasewindow/left-slide-hover.png</file>
-        <file>images/courtcasewindow/ok-hover.png</file>
         <file>images/courtcasewindow/right-slide-hover.png</file>
         <file>images/courtcasewindow/first-window.png</file>
+        <file>images/courtcasewindow/ok-hover.png</file>
+        <file>images/courtcasewindow/add.png</file>
+        <file>images/courtcasewindow/add-hover.png</file>
+        <file>images/courtcasewindow/delete.png</file>
+        <file>images/courtcasewindow/delete-hover.png</file>
+        <file>images/courtcasewindow/insert-field.png</file>
+        <file>images/courtcasewindow/insert-field-hover.png</file>
+        <file>images/courtcasewindow/edit-window.png</file>
+        <file>images/courtcasewindow/edit.png</file>
+        <file>images/courtcasewindow/edit-hover.png</file>
     </qresource>
 </RCC>

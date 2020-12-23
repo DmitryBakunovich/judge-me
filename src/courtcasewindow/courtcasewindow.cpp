@@ -1,6 +1,8 @@
 #include "courtcasewindow.h"
 #include "ui_courtcasewindow.h"
 
+#include <QDebug>
+
 CourtCaseWindow::CourtCaseWindow(DataBase *dbMainWindow, QWidget *parent) : QDialog(parent), ui(new Ui::CourtCaseWindow) {
     ui->setupUi(this);
 
@@ -9,18 +11,86 @@ CourtCaseWindow::CourtCaseWindow(DataBase *dbMainWindow, QWidget *parent) : QDia
     this->setAttribute(Qt::WA_DeleteOnClose);
 
     connect(ui->close, &QToolButton::clicked, this, &QWidget::close);
-    connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeComboBox(int)));
+    connect(ui->chooseTemplate, SIGNAL(currentIndexChanged(int)), this, SLOT(changeComboBox(int)));
 
-    connect(ui->firstPageButton, SIGNAL(clicked()), this, SLOT(firstPageClicked()));
-    connect(ui->secondPageButton, SIGNAL(clicked()), this, SLOT(secondPageClicked()));
-    connect(ui->okeyButtun, SIGNAL(clicked()), this, SLOT(okeyButtonClicked()));
+    connect(ui->firstPageButton, SIGNAL(clicked()), this, SLOT(clickedFirstPage()));
+    connect(ui->secondPageButton, SIGNAL(clicked()), this, SLOT(clickedSecondPage()));
+    connect(ui->okeyButtun, SIGNAL(clicked()), this, SLOT(clickedConfirmButton()));
 
     db = dbMainWindow;
     for(auto it: db->getAllJudgment()) {
-        ui->comboBox->addItem(it);
+        ui->chooseTemplate->addItem(it);
     }
 
     allFields = db->getAllFields();
+    foreach(QString value, allFields) {
+        ui->comboBox->addItem(value);
+    }
+
+    connect(ui->editTemplate, SIGNAL(clicked()), this, SLOT(showEditTemplatePage()));
+    ui->editWidget->setVisible(false);
+}
+
+void CourtCaseWindow::showEditTemplatePage() {
+    if (ui->chooseTemplate->currentText() == "") {
+        return;
+    }
+
+    ui->textEdit->setText(db->getTextTemplate(
+                              ui->chooseTemplate->currentText()
+                              ));
+    QJsonArray templateFields = db->getFieldsForJudgment(
+                ui->chooseTemplate->currentText()
+                );
+    templateFieldSet.clear();
+    for (auto item : templateFields) {
+        templateFieldSet.insert(item.toString());
+    }
+
+    connect(ui->confirmEdit, SIGNAL(clicked()), this, SLOT(clickedConfirmEditButton()));
+    connect(ui->insertField, SIGNAL(clicked()), this, SLOT(insertFieldInTemplate()));
+    connect(ui->deleteField, SIGNAL(clicked()), this, SLOT(clickedDeleteFieldButton()));
+
+    ui->mainWidget->setVisible(false);
+    ui->editWidget->setVisible(true);
+}
+
+void CourtCaseWindow::clickedConfirmEditButton() {
+    QJsonObject jsonObject;
+    QJsonArray templateFields;
+    for (auto item : templateFieldSet) {
+        templateFields.append(item);
+    }
+    jsonObject.insert("fields_array", templateFields);
+    db->updateJudgment(
+                ui->chooseTemplate->currentText(),
+                QJsonDocument::fromVariant(jsonObject.toVariantMap()),
+                ui->textEdit->toPlainText()
+                );
+
+    createFieldPage(
+                QJsonArray(db->getFieldsForJudgment(ui->chooseTemplate->currentText()))
+                );
+
+    ui->mainWidget->setVisible(true);
+    ui->editWidget->setVisible(false);
+}
+
+void CourtCaseWindow::clickedDeleteFieldButton() {
+    ui->textEdit->setText(
+                QString(ui->textEdit->toPlainText()).remove(allFields.key(ui->comboBox->currentText())));
+    templateFieldSet.remove(
+                allFields.key(ui->comboBox->currentText())
+                );
+}
+
+void CourtCaseWindow::insertFieldInTemplate() {
+    ui->textEdit->insertPlainText(
+                allFields.key(ui->comboBox->currentText())
+                );
+    templateFieldSet.insert(
+                allFields.key(ui->comboBox->currentText())
+                );
 }
 
 void CourtCaseWindow::changeMainPageStyle() {
@@ -38,12 +108,12 @@ void CourtCaseWindow::changeMainPageStyle() {
     }
 }
 
-void CourtCaseWindow::firstPageClicked() {
+void CourtCaseWindow::clickedFirstPage() {
     ui->stackedWidget->setCurrentIndex(0);
     changeMainPageStyle();
 }
 
-void CourtCaseWindow::secondPageClicked() {
+void CourtCaseWindow::clickedSecondPage() {
     ui->stackedWidget->setCurrentIndex(1);
     changeMainPageStyle();
 }
@@ -56,7 +126,7 @@ bool CourtCaseWindow::checkFillingFields() {
             item->setStyleSheet(StyleHelper::getEmptyFieldStyle());
             if (!isEmptyField) {
                 firstEmptyIndex = fieldsList.indexOf(item);
-                ui->stackedWidget_2->setCurrentIndex(firstEmptyIndex/6);
+                ui->fieldStackedWidget->setCurrentIndex(firstEmptyIndex/6);
             }
             isEmptyField = true;
         } else {
@@ -72,7 +142,7 @@ void CourtCaseWindow::createFile(QString text) {
     if (!lastFileDir.exists()) {
         lastFileDir.mkdir(pathToLastFileDir);
     }
-    QString filename(ui->filenameEdit->text() + " " + ui->comboBox->currentText());
+    QString filename(ui->filenameEdit->text() + " " + ui->chooseTemplate->currentText());
     QFile file(pathToLastFileDir + filename + ".docx");
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)){
         QTextStream fileout(&file);
@@ -83,7 +153,7 @@ void CourtCaseWindow::createFile(QString text) {
 
 void CourtCaseWindow::createCourtCase() {
     if (!checkFillingFields()) {
-        QString text = db->getTextTemplate(ui->comboBox->currentText());
+        QString text = db->getTextTemplate(ui->chooseTemplate->currentText());
         for (auto item: fieldsList) {
             text.replace(allFields.key(item->placeholderText()), item->text());
         }
@@ -92,9 +162,9 @@ void CourtCaseWindow::createCourtCase() {
     }
 }
 
-void CourtCaseWindow::okeyButtonClicked() {
+void CourtCaseWindow::clickedConfirmButton() {
     if (ui->stackedWidget->currentIndex() == 0 &&
-        ui->comboBox->currentText() != "" &&
+        ui->chooseTemplate->currentText() != "" &&
         ui->filenameEdit->text() != "") {
         ui->secondPageButton->setEnabled(true);
         ui->stackedWidget->setCurrentIndex(1);
@@ -104,10 +174,10 @@ void CourtCaseWindow::okeyButtonClicked() {
     }
 }
 
-void CourtCaseWindow::clearStackedWidget() {
-    for(int i = ui->stackedWidget_2->count(); i >= 0; i--) {
-        QWidget* widget = ui->stackedWidget_2->widget(i);
-        ui->stackedWidget_2->removeWidget(widget);
+void CourtCaseWindow::clearFieldStackedWidget() {
+    for(int i = ui->fieldStackedWidget->count(); i >= 0; i--) {
+        QWidget* widget = ui->fieldStackedWidget->widget(i);
+        ui->fieldStackedWidget->removeWidget(widget);
         widget->deleteLater();
     }
 }
@@ -122,7 +192,7 @@ void CourtCaseWindow::makePageButtons(int buttonsCount) {
     slideLeftButton->setMaximumSize(12, 12);
     ui->buttonLayout->addWidget(slideLeftButton);
     pageButtonList.append(slideLeftButton);
-    connect(slideLeftButton, SIGNAL(clicked()), this, SLOT(slideButtonClicked()));
+    connect(slideLeftButton, SIGNAL(clicked()), this, SLOT(clickedSlideButton()));
     slideLeftButton->setVisible(false);
 
     for (int i = 0; i < buttonsCount; i++) {
@@ -143,7 +213,7 @@ void CourtCaseWindow::makePageButtons(int buttonsCount) {
             pageButton->setVisible(false);
         }
         pageButtonList.append(pageButton);
-        connect(pageButton, SIGNAL(clicked()), this, SLOT (pageButtonClicked()));
+        connect(pageButton, SIGNAL(clicked()), this, SLOT(clickedPageButton()));
     }
 
     QPushButton *slideRightButton = new QPushButton();
@@ -153,7 +223,7 @@ void CourtCaseWindow::makePageButtons(int buttonsCount) {
     ui->buttonLayout->addWidget(slideRightButton);
     pageButtonList.append(slideRightButton);
     (buttonsCount > 4) ? slideRightButton->setVisible(true) : slideRightButton->setVisible(false);
-    connect(slideRightButton, SIGNAL(clicked()), this, SLOT(slideButtonClicked()));
+    connect(slideRightButton, SIGNAL(clicked()), this, SLOT(clickedSlideButton()));
 
     ui->buttonLayout->setSpacing(7);
     QSpacerItem *rightSpacer = new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -167,11 +237,8 @@ void CourtCaseWindow::clearButtonsLayout(){
     }
 }
 
-void CourtCaseWindow::changeComboBox(int index) {
-    QString caseName = ui->comboBox->itemText(index);
-
-    QJsonArray fieldsArray = db->getFieldsForJudgment(caseName);
-    clearStackedWidget();
+void CourtCaseWindow::createFieldPage(QJsonArray fieldsArray) {
+    clearFieldStackedWidget();
     clearButtonsLayout();
     pageButtonList.clear();
     fieldsList.clear();
@@ -185,7 +252,7 @@ void CourtCaseWindow::changeComboBox(int index) {
                 fieldEdit->setMinimumHeight(40);
                 fieldEdit->setStyleSheet(StyleHelper::getFieldStyle());
                 fieldEdit->setPlaceholderText(
-                            allFields[fieldsArray.first().toString()]
+                            allFields.value(fieldsArray.first().toString())
                         );
                 fieldsArray.pop_front();
                 fieldsList.append(fieldEdit);
@@ -199,25 +266,31 @@ void CourtCaseWindow::changeComboBox(int index) {
         pageLayout->addItem(lowerSpacer);
 
         QWidget *pageWidget = new QWidget();
-        ui->stackedWidget_2->addWidget(pageWidget);
+        ui->fieldStackedWidget->addWidget(pageWidget);
         pageWidget->setLayout(pageLayout);
     }
 }
 
-void CourtCaseWindow::pageButtonClicked() {
+void CourtCaseWindow::changeComboBox(int index) {
+    QString caseName = ui->chooseTemplate->itemText(index);
+
+    createFieldPage(QJsonArray(db->getFieldsForJudgment(caseName)));
+}
+
+void CourtCaseWindow::clickedPageButton() {
     for (int i = 1; i < pageButtonList.size() - 1; i++) {
         pageButtonList[i]->setStyleSheet(
                     "image: url(:/courtcasewindow/images/courtcasewindow/page-button.png);"
                     "border:none;");
     }
     QPushButton *currentButton = (QPushButton*)this->sender();
-    ui->stackedWidget_2->setCurrentIndex(pageButtonList.indexOf(currentButton) - 1);
+    ui->fieldStackedWidget->setCurrentIndex(pageButtonList.indexOf(currentButton) - 1);
     currentButton->setStyleSheet(
                 "image: url(:/courtcasewindow/images/courtcasewindow/page-button-switch.png);"
                 "border:none;");
 }
 
-void CourtCaseWindow::slideButtonClicked() {
+void CourtCaseWindow::clickedSlideButton() {
     QPushButton *currentButton = (QPushButton*)this->sender();
     if (currentButton == pageButtonList.last()) {
         buttonDifference += 1;

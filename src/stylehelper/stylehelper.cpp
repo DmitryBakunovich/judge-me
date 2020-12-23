@@ -48,7 +48,8 @@ QString StyleHelper::getEmptyFieldStyle() {
            "border: 2px solid #a24b51;"
            "border-radius: 20px;"
            "font-size: 14px;"
-           "padding-left: 10px;";
+           "padding-left: 10px;"
+           "color: #566d8e";
 }
 
 QString StyleHelper::getFillFieldStyle() {
@@ -56,7 +57,8 @@ QString StyleHelper::getFillFieldStyle() {
            "border: 2px solid #eff1f6;"
            "border-radius: 20px;"
            "font-size: 14px;"
-           "padding-left: 10px;";
+           "padding-left: 10px;"
+           "color: #566d8e";
 }
 
 QString StyleHelper::getFieldStyle() {
@@ -64,7 +66,8 @@ QString StyleHelper::getFieldStyle() {
            "border: none;"
            "border-radius: 20px;"
            "font-size: 14px;"
-           "padding-left: 10px;";
+           "padding-left: 10px;"
+           "color: #566d8e";
 }
 
 QString StyleHelper::getLeftSlideStyle() {

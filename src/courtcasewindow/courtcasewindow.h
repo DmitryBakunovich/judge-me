@@ -8,6 +8,7 @@
 #include <QTextStream>
 #include <QCoreApplication>
 #include <QDir>
+#include <QSet>
 
 #include <src/database/database.h>
 #include <src/stylehelper/stylehelper.h>
@@ -25,12 +26,17 @@ public:
     ~CourtCaseWindow();
 
 private slots:
-    void secondPageClicked();
-    void firstPageClicked();
+    void clickedSecondPage();
+    void clickedFirstPage();
     void changeComboBox(int index);
-    void pageButtonClicked();
-    void slideButtonClicked();
-    void okeyButtonClicked();
+    void clickedPageButton();
+    void clickedSlideButton();
+    void clickedConfirmButton();
+
+    void showEditTemplatePage();
+    void insertFieldInTemplate();
+    void clickedConfirmEditButton();
+    void clickedDeleteFieldButton();
 
 private:
     Ui::CourtCaseWindow *ui;
@@ -38,9 +44,10 @@ private:
 
     void changeMainPageStyle();
 
+    void createFieldPage(QJsonArray fieldsArray);
     void makePageButtons(int buttonsCount);
     void clearButtonsLayout();
-    void clearStackedWidget();
+    void clearFieldStackedWidget();
     QList<QPushButton*> pageButtonList;
     int buttonDifference = 0;
 
@@ -50,6 +57,8 @@ private:
 
     QMap<QString, QString> allFields;
     void createFile(QString text);
+
+    QSet<QString> templateFieldSet;
 };
 
 #endif // COURTCASEWINDOW_H

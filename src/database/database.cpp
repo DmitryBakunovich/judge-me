@@ -106,11 +106,12 @@ void DataBase::addJudgment(QString article, QJsonDocument fields) {
     query.exec();
 }
 
-void DataBase::updateJudgment(QString article, QJsonDocument fields) {
+void DataBase::updateJudgment(QString article, QJsonDocument fields, QString text) {
     QSqlQuery query;
-    query.prepare("UPDATE judgment SET fields = :fields WHERE article = :article;");
+    query.prepare("UPDATE judgment SET fields = :fields, text = :text WHERE article = :article;");
     query.bindValue(":article", article);
     query.bindValue(":fields", fields.toJson());
+    query.bindValue(":text", text);
     query.exec();
 }
 

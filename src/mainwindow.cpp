@@ -141,7 +141,7 @@ void MainWindow::createLatestTemplate(QJsonObject sortedJson) {
             templateButton->setMaximumSize(55, 65);
             if (json["is_criminal"].toBool()) {
                 templateButton->setStyleSheet(
-                            QString("border: none; image: url(:/main/images/main/criminal-protocol.png)")
+                            "border: none; image: url(:/main/images/main/criminal-protocol.png)"
                             );
             } else {
                 templateButton->setStyleSheet(
@@ -152,6 +152,8 @@ void MainWindow::createLatestTemplate(QJsonObject sortedJson) {
                             );
             }
             QLabel *templateName = new QLabel(json["fullname"].toString());
+            templateName->setStyleSheet(
+                        "color: #7b8da8;");
             templateName->setAlignment(Qt::AlignHCenter);
             templateName->setMaximumWidth(55);
             templateName->setMinimumWidth(55);
