@@ -117,6 +117,14 @@ QComboBox QAbstractItemView {
 QComboBox QListView {
 	width: 20px;
 }
+
+QLineEdit {
+	background-color: #afc0da;
+	border-radius: 20px;
+	font-size: 14px;
+	padding-left: 10px;
+	color: #566d8e;
+}
 </string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
@@ -283,65 +291,83 @@ QComboBox QListView {
                 </spacer>
                </item>
                <item>
-                <widget class="QLabel" name="label">
+                <widget class="QLabel" name="whatToDo">
                  <property name="text">
-                  <string>Выберите поле и вставьте его в текст</string>
+                  <string>Введите название статьи, выберите поле и вставьте его в текст</string>
                  </property>
                 </widget>
                </item>
               </layout>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <layout class="QVBoxLayout" name="verticalLayout_7">
                <property name="spacing">
-                <number>10</number>
-               </property>
-               <property name="leftMargin">
-                <number>0</number>
+                <number>5</number>
                </property>
                <property name="topMargin">
                 <number>0</number>
                </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
                <item>
-                <widget class="QComboBox" name="comboBox">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
+                <widget class="QLineEdit" name="nameTemplate">
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
                    <height>40</height>
                   </size>
                  </property>
-                 <property name="styleSheet">
-                  <string notr="true"/>
-                 </property>
-                 <property name="editable">
-                  <bool>false</bool>
-                 </property>
-                 <item>
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </item>
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="addField">
-                 <property name="minimumSize">
-                  <size>
-                   <width>25</width>
-                   <height>25</height>
-                  </size>
+                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                 <property name="spacing">
+                  <number>10</number>
                  </property>
-                 <property name="styleSheet">
-                  <string notr="true">#addField {
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QComboBox" name="comboBox">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
+                   <property name="editable">
+                    <bool>false</bool>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="addField">
+                   <property name="minimumSize">
+                    <size>
+                     <width>25</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">#addField {
 	image: url(:/courtcasewindow/images/courtcasewindow/add.png);
 	border: none;
 }
@@ -349,22 +375,22 @@ QComboBox QListView {
 	image: url(:/courtcasewindow/images/courtcasewindow/add-hover.png);
 	border: none;
 }</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="insertField">
-                 <property name="minimumSize">
-                  <size>
-                   <width>25</width>
-                   <height>25</height>
-                  </size>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">#insertField {
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="insertField">
+                   <property name="minimumSize">
+                    <size>
+                     <width>25</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">#insertField {
 	image: url(:/courtcasewindow/images/courtcasewindow/insert-field.png);
 	border: none;
 }
@@ -372,22 +398,22 @@ QComboBox QListView {
 	image: url(:/courtcasewindow/images/courtcasewindow/insert-field-hover.png);
 	border: none;
 }</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="deleteField">
-                 <property name="minimumSize">
-                  <size>
-                   <width>25</width>
-                   <height>25</height>
-                  </size>
-                 </property>
-                 <property name="styleSheet">
-                  <string notr="true">#deleteField {
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="deleteField">
+                   <property name="minimumSize">
+                    <size>
+                     <width>25</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">#deleteField {
 	image: url(:/courtcasewindow/images/courtcasewindow/delete.png);
 	border: none;
 }
@@ -395,11 +421,13 @@ QComboBox QListView {
 	image: url(:/courtcasewindow/images/courtcasewindow/delete-hover.png);
 	border: none;
 }</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
               </layout>
              </item>
@@ -789,11 +817,7 @@ border: none
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">background-color: #afc0da;
-border-radius: 20px;
-font-size: 14px;
-padding-left: 10px;
-color: #566d8e;</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string/>

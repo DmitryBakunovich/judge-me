@@ -28,6 +28,7 @@ CourtCaseWindow::CourtCaseWindow(DataBase *dbMainWindow, QWidget *parent) : QDia
     }
 
     connect(ui->editTemplate, SIGNAL(clicked()), this, SLOT(showEditTemplatePage()));
+    connect(ui->addTemplate, SIGNAL(clicked()), this, SLOT(showEditTemplatePage()));
     connect(ui->deleteTemplate, SIGNAL(clicked()), this, SLOT(clickedDeleteTemplate()));
 
     ui->editWidget->setVisible(false);
@@ -40,7 +41,6 @@ void CourtCaseWindow::clickedDeleteTemplate() {
                     ui->chooseTemplate->currentIndex()
                     );
         ui->chooseTemplate->setCurrentIndex(0);
-        ui->chooseTemplate->setStyleSheet(StyleHelper::getComboboxWithoutBorderStyle());
     } else {
         ui->chooseTemplate->setStyleSheet(StyleHelper::getEmptyComboboxStyle());
     }
@@ -48,25 +48,31 @@ void CourtCaseWindow::clickedDeleteTemplate() {
 
 
 void CourtCaseWindow::showEditTemplatePage() {
-    if (ui->chooseTemplate->currentText() == "") {
+    QPushButton *currentButton = (QPushButton*)this->sender();
+    if (ui->chooseTemplate->currentText() == "" && currentButton == ui->editTemplate) {
         return;
     }
-    ui->textEdit->setText(db->getTextTemplate(
-                              ui->chooseTemplate->currentText()
-                              ));
 
-    QJsonArray templateFields = db->getFieldsForJudgment(
-                ui->chooseTemplate->currentText()
-                );
-    templateFieldSet.clear();
-    for (auto item : templateFields) {
-        templateFieldSet.insert(item.toString());
-    }
+    if (currentButton == ui->editTemplate) {
+        ui->nameTemplate->setVisible(false);
+        ui->whatToDo->setText("Выберите поле и вставьте его в текст");
+        ui->textEdit->setText(db->getTextTemplate(
+                                  ui->chooseTemplate->currentText()
+                                  ));
 
-    if (db->getLegalResponsibility(
-                ui->chooseTemplate->currentText()
-                )) {
-        ui->legalResponsibility->setChecked(true);
+        QJsonArray templateFields = db->getFieldsForJudgment(
+                    ui->chooseTemplate->currentText()
+                    );
+        templateFieldSet.clear();
+        for (auto item : templateFields) {
+            templateFieldSet.insert(item.toString());
+        }
+
+        if (db->getLegalResponsibility(
+                    ui->chooseTemplate->currentText()
+                    )) {
+            ui->legalResponsibility->setChecked(true);
+        }
     }
 
     connect(ui->confirmEdit, SIGNAL(clicked()), this, SLOT(clickedConfirmEditButton()));
@@ -78,22 +84,38 @@ void CourtCaseWindow::showEditTemplatePage() {
 }
 
 void CourtCaseWindow::clickedConfirmEditButton() {
+    QPushButton *currentButton = (QPushButton*)this->sender();
+
     QJsonObject jsonObject;
     QJsonArray templateFields;
     for (auto item : templateFieldSet) {
         templateFields.append(item);
     }
     jsonObject.insert("fields_array", templateFields);
-    db->updateJudgment(
-                ui->chooseTemplate->currentText(),
-                QJsonDocument::fromVariant(jsonObject.toVariantMap()),
-                ui->textEdit->toPlainText()
-                );
 
-    createFieldPage(
-                QJsonArray(db->getFieldsForJudgment(ui->chooseTemplate->currentText()))
-                );
-
+    if (currentButton == ui->editTemplate) {
+        db->updateJudgment(
+                    ui->chooseTemplate->currentText(),
+                    QJsonDocument::fromVariant(jsonObject.toVariantMap()),
+                    ui->textEdit->toPlainText()
+                    );
+        createFieldPage(
+                    QJsonArray(db->getFieldsForJudgment(ui->chooseTemplate->currentText()))
+                    );
+    } else {
+        db->addJudgment(
+                    ui->nameTemplate->text(),
+                    QJsonDocument::fromVariant(jsonObject.toVariantMap()),
+                    ui->textEdit->toPlainText(),
+                    (ui->legalResponsibility->isChecked()) ? true : false
+                    );
+        ui->chooseTemplate->addItem(
+                    ui->nameTemplate->text()
+                    );
+        ui->nameTemplate->setText("");
+        ui->comboBox->setCurrentIndex(0);
+        ui->textEdit->setText("");
+    }
     ui->mainWidget->setVisible(true);
     ui->editWidget->setVisible(false);
 }
@@ -297,7 +319,9 @@ void CourtCaseWindow::changeComboBox(int index) {
     QString caseName = ui->chooseTemplate->itemText(index);
 
     ui->chooseTemplate->setStyleSheet(StyleHelper::getComboboxWithoutBorderStyle());
-    createFieldPage(QJsonArray(db->getFieldsForJudgment(caseName)));
+    if (index != 0) {
+        createFieldPage(QJsonArray(db->getFieldsForJudgment(caseName)));
+    }
 }
 
 void CourtCaseWindow::clickedPageButton() {

@@ -107,11 +107,15 @@ bool DataBase::getLegalResponsibility(QString article) {
     return query.value(0).toBool();
 }
 
-void DataBase::addJudgment(QString article, QJsonDocument fields) {
+void DataBase::addJudgment(QString article, QJsonDocument fields,
+                           QString text, bool isCriminal) {
     QSqlQuery query;
-    query.prepare("INSERT INTO judgment (article, fields) VALUES (:article, :fields)");
+    query.prepare("INSERT INTO judgment (article, fields, text, is_criminal) "
+                  "VALUES (:article, :fields, :text, :is_criminal)");
     query.bindValue(":article", article);
     query.bindValue(":fields", fields.toJson());
+    query.bindValue(":text", text);
+    query.bindValue(":is_criminal", isCriminal);
     query.exec();
 }
 
