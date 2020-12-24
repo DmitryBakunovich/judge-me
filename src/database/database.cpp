@@ -98,6 +98,15 @@ QString DataBase::getTextTemplate(QString article) {
     return query.value(0).toString();
 }
 
+bool DataBase::getLegalResponsibility(QString article) {
+    QSqlQuery query;
+    query.prepare("SELECT is_criminal FROM judgment WHERE article = :article");
+    query.bindValue(":article", article);
+    query.exec();
+    query.first();
+    return query.value(0).toBool();
+}
+
 void DataBase::addJudgment(QString article, QJsonDocument fields) {
     QSqlQuery query;
     query.prepare("INSERT INTO judgment (article, fields) VALUES (:article, :fields)");

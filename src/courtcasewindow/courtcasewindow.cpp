@@ -28,23 +28,45 @@ CourtCaseWindow::CourtCaseWindow(DataBase *dbMainWindow, QWidget *parent) : QDia
     }
 
     connect(ui->editTemplate, SIGNAL(clicked()), this, SLOT(showEditTemplatePage()));
+    connect(ui->deleteTemplate, SIGNAL(clicked()), this, SLOT(clickedDeleteTemplate()));
+
     ui->editWidget->setVisible(false);
 }
+
+void CourtCaseWindow::clickedDeleteTemplate() {
+    if (ui->chooseTemplate->currentText() != "") {
+        db->deleteJudgment(ui->chooseTemplate->currentText());
+        ui->chooseTemplate->removeItem(
+                    ui->chooseTemplate->currentIndex()
+                    );
+        ui->chooseTemplate->setCurrentIndex(0);
+        ui->chooseTemplate->setStyleSheet(StyleHelper::getComboboxWithoutBorderStyle());
+    } else {
+        ui->chooseTemplate->setStyleSheet(StyleHelper::getEmptyComboboxStyle());
+    }
+}
+
 
 void CourtCaseWindow::showEditTemplatePage() {
     if (ui->chooseTemplate->currentText() == "") {
         return;
     }
-
     ui->textEdit->setText(db->getTextTemplate(
                               ui->chooseTemplate->currentText()
                               ));
+
     QJsonArray templateFields = db->getFieldsForJudgment(
                 ui->chooseTemplate->currentText()
                 );
     templateFieldSet.clear();
     for (auto item : templateFields) {
         templateFieldSet.insert(item.toString());
+    }
+
+    if (db->getLegalResponsibility(
+                ui->chooseTemplate->currentText()
+                )) {
+        ui->legalResponsibility->setChecked(true);
     }
 
     connect(ui->confirmEdit, SIGNAL(clicked()), this, SLOT(clickedConfirmEditButton()));
@@ -96,15 +118,15 @@ void CourtCaseWindow::insertFieldInTemplate() {
 void CourtCaseWindow::changeMainPageStyle() {
     if (ui->stackedWidget->currentIndex() == 0) {
         ui->mainWidget->setStyleSheet(StyleHelper::getFirstPageStyle());
-        ui->mainWidget->setMinimumSize(549, 401);
-        ui->mainWidget->setMaximumSize(549, 401);
+        ui->mainWidget->setMinimumSize(550, 401);
+        ui->mainWidget->setMaximumSize(550, 401);
     } else {
         ui->mainWidget->setStyleSheet(StyleHelper::getSecondPageStyle());
         ui->firstPageButton->setStyleSheet(StyleHelper::getFirstPageButtonStyle());
         ui->secondPageButton->setStyleSheet(StyleHelper::getSecondPageButtonStyle());
         ui->secondPageButton->setMinimumSize(53, 53);
-        ui->mainWidget->setMinimumSize(549, 614);
-        ui->mainWidget->setMaximumSize(549, 614);
+        ui->mainWidget->setMinimumSize(550, 614);
+        ui->mainWidget->setMaximumSize(550, 614);
     }
 }
 
@@ -274,6 +296,7 @@ void CourtCaseWindow::createFieldPage(QJsonArray fieldsArray) {
 void CourtCaseWindow::changeComboBox(int index) {
     QString caseName = ui->chooseTemplate->itemText(index);
 
+    ui->chooseTemplate->setStyleSheet(StyleHelper::getComboboxWithoutBorderStyle());
     createFieldPage(QJsonArray(db->getFieldsForJudgment(caseName)));
 }
 

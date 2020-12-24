@@ -28,6 +28,7 @@ public:
     QMap<QString, QString> getAllFields();
     QJsonObject getLatestTemplates(QString sortBy);
     QString getTextTemplate(QString article);
+    bool getLegalResponsibility(QString article);
 
     void addJudgment(QString article, QJsonDocument fields);
     void updateJudgment(QString article, QJsonDocument fields, QString text);

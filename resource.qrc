@@ -61,5 +61,7 @@
         <file>images/courtcasewindow/edit-window.png</file>
         <file>images/courtcasewindow/edit.png</file>
         <file>images/courtcasewindow/edit-hover.png</file>
+        <file>images/courtcasewindow/criminal.png</file>
+        <file>images/courtcasewindow/criminal-hover.png</file>
     </qresource>
 </RCC>

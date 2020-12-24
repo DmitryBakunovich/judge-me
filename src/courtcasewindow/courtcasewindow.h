@@ -33,6 +33,8 @@ private slots:
     void clickedSlideButton();
     void clickedConfirmButton();
 
+    void clickedDeleteTemplate();
+
     void showEditTemplatePage();
     void insertFieldInTemplate();
     void clickedConfirmEditButton();

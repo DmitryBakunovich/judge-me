@@ -47,37 +47,39 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->add, SIGNAL(clicked()), this, SLOT(addButtonClicked()));
 }
 
-void MainWindow::addButtonClicked(){
-    courtCaseWindow = new CourtCaseWindow(db, this);
-
-    courtCaseWindow->show();
-    courtCaseWindow->setGeometry(0, 29, this->width(), this->height()-29);
+QPoint MainWindow::previousPosition() const {
+    return mousePreviousPosition;
 }
 
-void MainWindow::addMenuForSort() {
-    auto sortMenu = new QMenu(this);
-    sortMenu->installEventFilter(this);
-    ui->sort->setMenu(sortMenu);
-    sortMenu->setMaximumWidth(120);
+void MainWindow::setPreviousPosition(QPoint previousPosition) {
+    if (mousePreviousPosition == previousPosition)
+        return;
+    mousePreviousPosition = previousPosition;
+    emit previousPositionChanged(previousPosition);
+}
 
-    QAction *action = new QAction("СОРТИРОВАТЬ ПО:");
-    sortMenu->addAction(action);
-    action->setDisabled(true);
+void MainWindow::mousePressEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton && event->pos().y() <= 29 && event->pos().y() >= 0) {
+        isMoveWindow = true;
+        setPreviousPosition(event->pos());
+    }
+    return QWidget::mousePressEvent(event);
+}
 
-    QAction *action2 = new QAction("ИМЯ");
-    sortMenu->addAction(action2);
-    connect(action2, SIGNAL(triggered()), this, SLOT (sortActionTriggired()));
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    if (isMoveWindow) {
+        auto dx = event->x() - mousePreviousPosition.x();
+        auto dy = event->y() - mousePreviousPosition.y();
+        setGeometry(x() + dx, y() + dy, width(), height());
+    }
+}
 
-    QAction *action3 = new QAction("ДАТА");
-    sortMenu->addAction(action3);
-    connect(action3, SIGNAL(triggered()), this, SLOT (sortActionTriggired()));
-
-    QAction *action4 = new QAction("ПРИОРИТЕТ");
-
-    sortMenu->addAction(action4);
-    connect(action4, SIGNAL(triggered()), this, SLOT (sortActionTriggired()));
-    sortMenu->setWindowFlag(Qt::NoDropShadowWindowHint);
-    sortMenu->setStyleSheet(StyleHelper::getMenuStyleSheet());
+void MainWindow::mouseReleaseEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton) {
+        isMoveWindow = false;
+    }
+    return QWidget::mouseReleaseEvent(event);
 }
 
 bool MainWindow::eventFilter(QObject * obj, QEvent *event) {
@@ -94,6 +96,54 @@ bool MainWindow::eventFilter(QObject * obj, QEvent *event) {
         return true;
     }
     return false;
+}
+
+void MainWindow::addMenuForSort() {
+    auto sortMenu = new QMenu(this);
+    sortMenu->installEventFilter(this);
+    sortMenu->setWindowFlags(sortMenu->windowFlags() | Qt::NoDropShadowWindowHint | Qt::FramelessWindowHint);
+    sortMenu->setAttribute(Qt::WA_TranslucentBackground);
+    sortMenu->setAttribute(Qt::WA_NoSystemBackground);
+    ui->sort->setMenu(sortMenu);
+
+    sortMenu->setMaximumWidth(120);
+
+    QAction *action = new QAction("Сортировать по:");
+    sortMenu->addAction(action);
+    action->setDisabled(true);
+
+    QAction *action2 = new QAction("Имя");
+    sortMenu->addAction(action2);
+    connect(action2, SIGNAL(triggered()), this, SLOT (sortActionTriggired()));
+
+    QAction *action3 = new QAction("Дата");
+    sortMenu->addAction(action3);
+    connect(action3, SIGNAL(triggered()), this, SLOT (sortActionTriggired()));
+
+    QAction *action4 = new QAction("Приоритет");
+
+    sortMenu->addAction(action4);
+    connect(action4, SIGNAL(triggered()), this, SLOT (sortActionTriggired()));
+    sortMenu->setStyleSheet(StyleHelper::getMenuStyleSheet());
+}
+
+void MainWindow::sortActionTriggired() {
+    QAction *currentAction = (QAction*)this->sender();
+    if (currentAction->text() == "Дата") {
+        buttonDifference = 0;
+        ui->stackedWidget->setCurrentIndex(0);
+    } else if (currentAction->text() == "Имя") {
+        buttonDifference = pageButtonList.size();
+        ui->stackedWidget->setCurrentIndex(buttonDifference);
+    } else if (currentAction->text() == "Приоритет") {
+        buttonDifference = pageButtonList.size() * 2;
+        ui->stackedWidget->setCurrentIndex(buttonDifference);
+    }
+
+    for (auto item: pageButtonList) {
+        item->setStyleSheet("image: url(:/main/images/main/page-switch.png); border:none;");
+    }
+    pageButtonList[0]->setStyleSheet("image: url(:/main/images/main/page-switch-hover.png); border:none;");
 }
 
 void MainWindow::addPageButtons(int buttonsCount) {
@@ -204,58 +254,12 @@ void MainWindow::pageButtonClicked() {
     currentButton->setStyleSheet("image: url(:/main/images/main/page-switch-hover.png); border:none;");
 }
 
-void MainWindow::sortActionTriggired() {
-    QAction *currentAction = (QAction*)this->sender();
-    if (currentAction->text() == "ДАТА") {
-        buttonDifference = 0;
-        ui->stackedWidget->setCurrentIndex(0);
-    } else if (currentAction->text() == "ИМЯ") {
-        buttonDifference = pageButtonList.size();
-        ui->stackedWidget->setCurrentIndex(buttonDifference);
-    } else if (currentAction->text() == "ПРИОРИТЕТ") {
-        buttonDifference = pageButtonList.size() * 2;
-        ui->stackedWidget->setCurrentIndex(buttonDifference);
-    }
 
-    for (auto item: pageButtonList) {
-        item->setStyleSheet("image: url(:/main/images/main/page-switch.png); border:none;");
-    }
-    pageButtonList[0]->setStyleSheet("image: url(:/main/images/main/page-switch-hover.png); border:none;");
-}
+void MainWindow::addButtonClicked(){
+    courtCaseWindow = new CourtCaseWindow(db, this);
 
-QPoint MainWindow::previousPosition() const {
-    return mousePreviousPosition;
-}
-
-void MainWindow::setPreviousPosition(QPoint previousPosition) {
-    if (mousePreviousPosition == previousPosition)
-        return;
-    mousePreviousPosition = previousPosition;
-    emit previousPositionChanged(previousPosition);
-}
-
-void MainWindow::mousePressEvent(QMouseEvent *event) {
-    if (event->button() == Qt::LeftButton && event->pos().y() <= 29 && event->pos().y() >= 0) {
-        isMoveWindow = true;
-        setPreviousPosition(event->pos());
-    }
-    return QWidget::mousePressEvent(event);
-}
-
-void MainWindow::mouseMoveEvent(QMouseEvent *event)
-{
-    if (isMoveWindow) {
-        auto dx = event->x() - mousePreviousPosition.x();
-        auto dy = event->y() - mousePreviousPosition.y();
-        setGeometry(x() + dx, y() + dy, width(), height());
-    }
-}
-
-void MainWindow::mouseReleaseEvent(QMouseEvent *event) {
-    if (event->button() == Qt::LeftButton) {
-        isMoveWindow = false;
-    }
-    return QWidget::mouseReleaseEvent(event);
+    courtCaseWindow->show();
+    courtCaseWindow->setGeometry(0, 29, this->width(), this->height()-29);
 }
 
 MainWindow::~MainWindow() {
