@@ -2,18 +2,24 @@
 
 QString StyleHelper::getMenuStyleSheet() {
     return "QMenu {"
-           "border: none"
+           "background-color: #d6dff0;"
+           "color: #566d8e;"
+           "border-radius: 7px;"
+           "font-size: 12px;"
            "}"
            "QMenu::item {"
-           "padding: 2px 5px 2px 2px;"
+           "border-radius: 7px;"
+           "padding: 5px 13px 5px 13px"
            "}"
            "QMenu::item:selected {"
-           "background-color: rgb(0, 85, 127);"
-           "color: rgb(255, 255, 255);"
+           "background-color: #ced9ed;"
+           "color: #7a93c1;"
            "}"
            "QMenu::item::disabled {"
-           "background-color:black;"
-           "color: white;"
+           "background-color: #c0cee8;"
+           "}"
+           "QMenu::item::disabled:selected {"
+           "color: #566d8e;"
            "}";
 }
 
@@ -48,7 +54,8 @@ QString StyleHelper::getEmptyFieldStyle() {
            "border: 2px solid #a24b51;"
            "border-radius: 20px;"
            "font-size: 14px;"
-           "padding-left: 10px;";
+           "padding-left: 10px;"
+           "color: #566d8e";
 }
 
 QString StyleHelper::getFillFieldStyle() {
@@ -56,7 +63,8 @@ QString StyleHelper::getFillFieldStyle() {
            "border: 2px solid #eff1f6;"
            "border-radius: 20px;"
            "font-size: 14px;"
-           "padding-left: 10px;";
+           "padding-left: 10px;"
+           "color: #566d8e";
 }
 
 QString StyleHelper::getFieldStyle() {
@@ -64,7 +72,8 @@ QString StyleHelper::getFieldStyle() {
            "border: none;"
            "border-radius: 20px;"
            "font-size: 14px;"
-           "padding-left: 10px;";
+           "padding-left: 10px;"
+           "color: #566d8e";
 }
 
 QString StyleHelper::getLeftSlideStyle() {
@@ -85,6 +94,18 @@ QString StyleHelper::getRightSlideStyle() {
            "}"
            "QPushButton:hover {"
            "image: url(:/courtcasewindow/images/courtcasewindow/right-slide-hover.png);"
+           "border: none;"
+           "}";
+}
+
+QString StyleHelper::getEmptyComboboxStyle() {
+    return "QComboBox {"
+           "border: 2px solid #a24b51;"
+           "}";
+}
+
+QString StyleHelper::getComboboxWithoutBorderStyle() {
+    return "QComboBox {"
            "border: none;"
            "}";
 }

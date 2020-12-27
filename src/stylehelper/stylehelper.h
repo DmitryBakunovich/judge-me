@@ -20,6 +20,9 @@ public:
     static QString getFieldStyle();
     static QString getEmptyFieldStyle();
     static QString getFillFieldStyle();
+
+    static QString getEmptyComboboxStyle();
+    static QString getComboboxWithoutBorderStyle();
 };
 
 #endif

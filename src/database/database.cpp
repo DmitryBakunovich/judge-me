@@ -98,19 +98,33 @@ QString DataBase::getTextTemplate(QString article) {
     return query.value(0).toString();
 }
 
-void DataBase::addJudgment(QString article, QJsonDocument fields) {
+bool DataBase::getLegalResponsibility(QString article) {
     QSqlQuery query;
-    query.prepare("INSERT INTO judgment (article, fields) VALUES (:article, :fields)");
+    query.prepare("SELECT is_criminal FROM judgment WHERE article = :article");
+    query.bindValue(":article", article);
+    query.exec();
+    query.first();
+    return query.value(0).toBool();
+}
+
+void DataBase::addJudgment(QString article, QJsonDocument fields,
+                           QString text, bool isCriminal) {
+    QSqlQuery query;
+    query.prepare("INSERT INTO judgment (article, fields, text, is_criminal) "
+                  "VALUES (:article, :fields, :text, :is_criminal)");
     query.bindValue(":article", article);
     query.bindValue(":fields", fields.toJson());
+    query.bindValue(":text", text);
+    query.bindValue(":is_criminal", isCriminal);
     query.exec();
 }
 
-void DataBase::updateJudgment(QString article, QJsonDocument fields) {
+void DataBase::updateJudgment(QString article, QJsonDocument fields, QString text) {
     QSqlQuery query;
-    query.prepare("UPDATE judgment SET fields = :fields WHERE article = :article;");
+    query.prepare("UPDATE judgment SET fields = :fields, text = :text WHERE article = :article;");
     query.bindValue(":article", article);
     query.bindValue(":fields", fields.toJson());
+    query.bindValue(":text", text);
     query.exec();
 }
 

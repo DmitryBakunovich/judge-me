@@ -22,7 +22,6 @@ HEADERS += \
     src/database/database.h \
     src/mainwindow.h \
     src/stylehelper/stylehelper.h
-
 FORMS += \
     src/courtcasewindow/courtcasewindow.ui \
     src/mainwindow.ui
