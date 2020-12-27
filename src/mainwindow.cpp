@@ -201,7 +201,11 @@ void MainWindow::createLatestTemplate(QJsonObject sortedJson) {
                                 ).arg(json["number_picture"].toInt())
                             );
             }
-            QLabel *templateName = new QLabel(json["fullname"].toString());
+            QString labelName = json["fullname"].toString();
+            if (labelName.length() > 6) {
+                labelName = labelName.left(6).append("...");
+            }
+            QLabel *templateName = new QLabel(labelName);
             templateName->setStyleSheet(
                         "color: #7b8da8;");
             templateName->setAlignment(Qt::AlignHCenter);
