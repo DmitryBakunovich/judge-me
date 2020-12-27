@@ -1,9 +1,6 @@
 #include "courtcasewindow.h"
 #include "ui_courtcasewindow.h"
 
-#include <QDebug>
-#include <QListView>
-
 CourtCaseWindow::CourtCaseWindow(DataBase *dbMainWindow, QWidget *parent) : QDialog(parent), ui(new Ui::CourtCaseWindow) {
     ui->setupUi(this);
 
@@ -43,6 +40,12 @@ CourtCaseWindow::CourtCaseWindow(DataBase *dbMainWindow, QWidget *parent) : QDia
     ui->chooseField->view()->window()->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
     ui->chooseField->view()->window()->setAttribute(Qt::WA_TranslucentBackground);
     ui->chooseField->setView(displayComboBox);
+
+    connect(ui->confirmEdit, SIGNAL(clicked()), this, SLOT(clickedConfirmEdit()));
+    connect(ui->insertField, SIGNAL(clicked()), this, SLOT(insertFieldInTemplate()));
+    connect(ui->deleteField, SIGNAL(clicked()), this, SLOT(clickedDeleteField()));
+    connect(ui->closeEditTemplate, SIGNAL(clicked()), this, SLOT(clickedCloseEditTemplate()));
+    connect(ui->addField, SIGNAL(clicked()), this, SLOT(clickedAddField()));
 }
 
 void CourtCaseWindow::clickedDeleteTemplate() {
@@ -56,7 +59,6 @@ void CourtCaseWindow::clickedDeleteTemplate() {
         ui->chooseTemplate->setStyleSheet(StyleHelper::getEmptyComboboxStyle());
     }
 }
-
 
 void CourtCaseWindow::showEditTemplatePage() {
     QPushButton *currentButton = (QPushButton*)this->sender();
@@ -88,12 +90,6 @@ void CourtCaseWindow::showEditTemplatePage() {
         ui->textEdit->setText("");
     }
 
-    connect(ui->confirmEdit, SIGNAL(clicked()), this, SLOT(clickedConfirmEdit()));
-    connect(ui->insertField, SIGNAL(clicked()), this, SLOT(insertFieldInTemplate()));
-    connect(ui->deleteField, SIGNAL(clicked()), this, SLOT(clickedDeleteField()));
-    connect(ui->closeEditTemplate, SIGNAL(clicked()), this, SLOT(clickedCloseEditTemplate()));
-    connect(ui->addField, SIGNAL(clicked()), this, SLOT(clickedAddField()));
-
     ui->inputField->setVisible(false);
     ui->mainWidget->setVisible(false);
     ui->editWidget->setVisible(true);
@@ -111,7 +107,6 @@ void CourtCaseWindow::setDisabledField() {
 void CourtCaseWindow::createField() {
     QString fieldText = ui->inputField->text();
     QString fieldReduction = fieldText.toUpper().left(3);
-    qDebug() << fieldReduction;
     int countDuplicate = 0;
     foreach (QString value, allFields) {
          if (QString(allFields.key(value)).mid(1, 3) == fieldReduction) {
@@ -168,8 +163,6 @@ void CourtCaseWindow::clickedCloseEditTemplate() {
 }
 
 void CourtCaseWindow::clickedConfirmEdit() {
-    QPushButton *currentButton = (QPushButton*)this->sender();
-
     QJsonObject jsonObject;
     QJsonArray templateFields;
     for (auto item : templateFieldSet) {
@@ -177,16 +170,7 @@ void CourtCaseWindow::clickedConfirmEdit() {
     }
     jsonObject.insert("fields_array", templateFields);
 
-    if (currentButton == ui->editTemplate) {
-        db->updateJudgment(
-                    ui->chooseTemplate->currentText(),
-                    QJsonDocument::fromVariant(jsonObject.toVariantMap()),
-                    ui->textEdit->toPlainText()
-                    );
-        createFieldPage(
-                    QJsonArray(db->getFieldsForJudgment(ui->chooseTemplate->currentText()))
-                    );
-    } else {
+    if (ui->nameTemplate->isVisible()) {
         db->addJudgment(
                     ui->nameTemplate->text(),
                     QJsonDocument::fromVariant(jsonObject.toVariantMap()),
@@ -199,6 +183,15 @@ void CourtCaseWindow::clickedConfirmEdit() {
         ui->nameTemplate->setText("");
         ui->chooseField->setCurrentIndex(0);
         ui->textEdit->setText("");
+    } else {
+        db->updateJudgment(
+                    ui->chooseTemplate->currentText(),
+                    QJsonDocument::fromVariant(jsonObject.toVariantMap()),
+                    ui->textEdit->toPlainText()
+                    );
+        createFieldPage(
+                    QJsonArray(db->getFieldsForJudgment(ui->chooseTemplate->currentText()))
+                    );
     }
     ui->mainWidget->setVisible(true);
     ui->editWidget->setVisible(false);

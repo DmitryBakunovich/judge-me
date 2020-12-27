@@ -9,6 +9,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QSet>
+#include <QListView>
 
 #include <src/database/database.h>
 #include <src/stylehelper/stylehelper.h>
