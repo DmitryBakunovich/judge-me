@@ -15,7 +15,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QLabel {
-	font-size: 14px;
+	font-size: 15px;
 	color: #8da3c3;
 }
 
@@ -89,6 +89,10 @@ QComboBox {
 	font-size: 14px;
 	color: #566d8e;
 }
+QComboBox::editable {
+	background-color: #afc0da;
+	padding-right: 20px;
+}
 QComboBox:on {
     padding-left: 6px;
 }
@@ -106,16 +110,23 @@ QComboBox::drop-down:hover {
 	image: url(:/courtcasewindow/images/courtcasewindow/combobox-button-hover.png);
 }
 
-QComboBox:item {
-       padding-left: 20px;  /* move text right to make room for tick mark */
+QComboBox QListView {
+	background-color: #d6dff0;
+	color: #566d8e;
+    border-radius: 7px;
+    font-size: 12px;
+}
+
+QComboBox QListView::item {
+border-radius: 7px;
+padding: 5px 13px 5px 13px
+}
+QComboBox QListView::item:selected {
+background-color: #ced9ed;
+color: #7a93c1;
 }
 QComboBox QAbstractItemView {
-       border: none;
-       color: black;
-       selection-background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #111, stop: 1 #333);
-}
-QComboBox QListView {
-	width: 20px;
+	outline: 0;
 }
 
 QLineEdit {
@@ -223,6 +234,9 @@ QLineEdit {
                <width>85</width>
                <height>67</height>
               </size>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
              </property>
              <property name="styleSheet">
               <string notr="true">#closeEditTemplate {
@@ -332,7 +346,17 @@ QLineEdit {
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QComboBox" name="comboBox">
+                  <widget class="QLineEdit" name="inputField">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="chooseField">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -345,17 +369,15 @@ QLineEdit {
                      <height>40</height>
                     </size>
                    </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
+                   </property>
                    <property name="styleSheet">
                     <string notr="true"/>
                    </property>
                    <property name="editable">
                     <bool>false</bool>
                    </property>
-                   <item>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </item>
                   </widget>
                  </item>
                  <item>
@@ -366,18 +388,28 @@ QLineEdit {
                      <height>25</height>
                     </size>
                    </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
+                   </property>
                    <property name="styleSheet">
                     <string notr="true">#addField {
 	image: url(:/courtcasewindow/images/courtcasewindow/add.png);
 	border: none;
 }
-#addField:hover {
+#addField:hover, #addField:checked {
 	image: url(:/courtcasewindow/images/courtcasewindow/add-hover.png);
 	border: none;
-}</string>
+}
+</string>
                    </property>
                    <property name="text">
                     <string/>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                   <property name="checked">
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
@@ -388,6 +420,9 @@ QLineEdit {
                      <width>25</width>
                      <height>25</height>
                     </size>
+                   </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">#insertField {
@@ -411,6 +446,9 @@ QLineEdit {
                      <width>25</width>
                      <height>25</height>
                     </size>
+                   </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">#deleteField {
@@ -474,6 +512,9 @@ p, li { white-space: pre-wrap; }
            </item>
            <item>
             <widget class="QRadioButton" name="legalResponsibility">
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
              <property name="styleSheet">
               <string notr="true">QRadioButton {
 	width:15px;
@@ -522,6 +563,9 @@ QRadioButton::indicator:unchecked {
                <width>90</width>
                <height>65</height>
               </size>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
              </property>
              <property name="styleSheet">
               <string notr="true">#confirmEdit {
@@ -603,6 +647,9 @@ QRadioButton::indicator:unchecked {
                <width>85</width>
                <height>67</height>
               </size>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
              </property>
              <property name="styleSheet">
               <string notr="true">#close {
@@ -848,6 +895,9 @@ border: none
                      <height>40</height>
                     </size>
                    </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
+                   </property>
                    <property name="styleSheet">
                     <string notr="true"/>
                    </property>
@@ -874,6 +924,9 @@ border: none
                      <width>25</width>
                      <height>25</height>
                     </size>
+                   </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">#addTemplate {
@@ -904,6 +957,9 @@ border: none
                      <height>25</height>
                     </size>
                    </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
+                   </property>
                    <property name="styleSheet">
                     <string notr="true">#editTemplate {
 	image: url(:/courtcasewindow/images/courtcasewindow/edit.png);
@@ -932,6 +988,9 @@ image: url(:/courtcasewindow/images/courtcasewindow/edit-hover.png);
                      <width>25</width>
                      <height>25</height>
                     </size>
+                   </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">#deleteTemplate {
@@ -1004,6 +1063,9 @@ image: url(:/courtcasewindow/images/courtcasewindow/edit-hover.png);
                <width>90</width>
                <height>65</height>
               </size>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
              </property>
              <property name="styleSheet">
               <string notr="true">#okeyButtun {

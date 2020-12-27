@@ -2,6 +2,7 @@
 #include "ui_courtcasewindow.h"
 
 #include <QDebug>
+#include <QListView>
 
 CourtCaseWindow::CourtCaseWindow(DataBase *dbMainWindow, QWidget *parent) : QDialog(parent), ui(new Ui::CourtCaseWindow) {
     ui->setupUi(this);
@@ -24,7 +25,7 @@ CourtCaseWindow::CourtCaseWindow(DataBase *dbMainWindow, QWidget *parent) : QDia
 
     allFields = db->getAllFields();
     foreach(QString value, allFields) {
-        ui->comboBox->addItem(value);
+        ui->chooseField->addItem(value);
     }
 
     connect(ui->editTemplate, SIGNAL(clicked()), this, SLOT(showEditTemplatePage()));
@@ -32,6 +33,16 @@ CourtCaseWindow::CourtCaseWindow(DataBase *dbMainWindow, QWidget *parent) : QDia
     connect(ui->deleteTemplate, SIGNAL(clicked()), this, SLOT(clickedDeleteTemplate()));
 
     ui->editWidget->setVisible(false);
+
+    QListView *displayChooseTemplate = new QListView();
+    ui->chooseTemplate->view()->window()->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+    ui->chooseTemplate->view()->window()->setAttribute(Qt::WA_TranslucentBackground);
+    ui->chooseTemplate->setView(displayChooseTemplate);
+
+    QListView *displayComboBox = new QListView();
+    ui->chooseField->view()->window()->setWindowFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
+    ui->chooseField->view()->window()->setAttribute(Qt::WA_TranslucentBackground);
+    ui->chooseField->setView(displayComboBox);
 }
 
 void CourtCaseWindow::clickedDeleteTemplate() {
@@ -73,17 +84,90 @@ void CourtCaseWindow::showEditTemplatePage() {
                     )) {
             ui->legalResponsibility->setChecked(true);
         }
+    } else {
+        ui->textEdit->setText("");
     }
 
-    connect(ui->confirmEdit, SIGNAL(clicked()), this, SLOT(clickedConfirmEditButton()));
+    connect(ui->confirmEdit, SIGNAL(clicked()), this, SLOT(clickedConfirmEdit()));
     connect(ui->insertField, SIGNAL(clicked()), this, SLOT(insertFieldInTemplate()));
-    connect(ui->deleteField, SIGNAL(clicked()), this, SLOT(clickedDeleteFieldButton()));
+    connect(ui->deleteField, SIGNAL(clicked()), this, SLOT(clickedDeleteField()));
+    connect(ui->closeEditTemplate, SIGNAL(clicked()), this, SLOT(clickedCloseEditTemplate()));
+    connect(ui->addField, SIGNAL(clicked()), this, SLOT(clickedAddField()));
 
+    ui->inputField->setVisible(false);
     ui->mainWidget->setVisible(false);
     ui->editWidget->setVisible(true);
 }
 
-void CourtCaseWindow::clickedConfirmEditButton() {
+void CourtCaseWindow::setDisabledField() {
+    bool isChecked = ui->addField->isChecked();
+    ui->textEdit->setDisabled(isChecked);
+    ui->legalResponsibility->setDisabled(isChecked);
+    ui->insertField->setDisabled(isChecked);
+    ui->deleteField->setDisabled(isChecked);
+    ui->nameTemplate->setDisabled(isChecked);
+}
+
+void CourtCaseWindow::createField() {
+    QString fieldText = ui->inputField->text();
+    QString fieldReduction = fieldText.toUpper().left(3);
+    qDebug() << fieldReduction;
+    int countDuplicate = 0;
+    foreach (QString value, allFields) {
+         if (QString(allFields.key(value)).mid(1, 3) == fieldReduction) {
+            countDuplicate += 1;
+         }
+    }
+
+    fieldReduction.append(QString::number(countDuplicate));
+    fieldReduction = QString("{%1}").arg(fieldReduction);
+    if (countDuplicate) {
+        fieldText.append(" ");
+        fieldText.append(QString::number(countDuplicate));
+    }
+
+    db->addField(
+                fieldText,
+                fieldReduction
+                );
+    allFields.insert(fieldReduction, fieldText);
+    ui->chooseField->addItem(fieldText);
+}
+
+void CourtCaseWindow::clickedAddField() {
+    if (ui->addField->isChecked()) {
+        ui->whatToDo->setText("Введите название нового поля");
+
+        ui->chooseField->setVisible(false);
+        ui->inputField->setVisible(true);
+        ui->inputField->setStyleSheet(StyleHelper::getEmptyFieldStyle());
+
+        setDisabledField();
+    } else {
+        QString inputFieldText = ui->inputField->text();
+        if (inputFieldText == "" || inputFieldText.length() < 3) {
+            ui->addField->setChecked(true);
+            return;
+        } else {
+            createField();
+
+            ui->chooseField->setVisible(true);
+            ui->inputField->setVisible(false);
+            ui->inputField->setText("");
+            ui->inputField->setStyleSheet("border: none;");
+
+            setDisabledField();
+        }
+    }
+}
+
+void CourtCaseWindow::clickedCloseEditTemplate() {
+    ui->chooseField->setCurrentIndex(0);
+    ui->mainWidget->setVisible(true);
+    ui->editWidget->setVisible(false);
+}
+
+void CourtCaseWindow::clickedConfirmEdit() {
     QPushButton *currentButton = (QPushButton*)this->sender();
 
     QJsonObject jsonObject;
@@ -113,27 +197,27 @@ void CourtCaseWindow::clickedConfirmEditButton() {
                     ui->nameTemplate->text()
                     );
         ui->nameTemplate->setText("");
-        ui->comboBox->setCurrentIndex(0);
+        ui->chooseField->setCurrentIndex(0);
         ui->textEdit->setText("");
     }
     ui->mainWidget->setVisible(true);
     ui->editWidget->setVisible(false);
 }
 
-void CourtCaseWindow::clickedDeleteFieldButton() {
+void CourtCaseWindow::clickedDeleteField() {
     ui->textEdit->setText(
-                QString(ui->textEdit->toPlainText()).remove(allFields.key(ui->comboBox->currentText())));
+                QString(ui->textEdit->toPlainText()).remove(allFields.key(ui->chooseField->currentText())));
     templateFieldSet.remove(
-                allFields.key(ui->comboBox->currentText())
+                allFields.key(ui->chooseField->currentText())
                 );
 }
 
 void CourtCaseWindow::insertFieldInTemplate() {
     ui->textEdit->insertPlainText(
-                allFields.key(ui->comboBox->currentText())
+                allFields.key(ui->chooseField->currentText())
                 );
     templateFieldSet.insert(
-                allFields.key(ui->comboBox->currentText())
+                allFields.key(ui->chooseField->currentText())
                 );
 }
 

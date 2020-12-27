@@ -33,12 +33,15 @@ private slots:
     void clickedSlideButton();
     void clickedConfirmButton();
 
-    void clickedDeleteTemplate();
-
     void showEditTemplatePage();
+    void clickedConfirmEdit();
+    void clickedDeleteField();
+
+    void clickedDeleteTemplate();
+    void clickedCloseEditTemplate();
+
     void insertFieldInTemplate();
-    void clickedConfirmEditButton();
-    void clickedDeleteFieldButton();
+    void clickedAddField();
 
 private:
     Ui::CourtCaseWindow *ui;
@@ -61,6 +64,9 @@ private:
     void createFile(QString text);
 
     QSet<QString> templateFieldSet;
+
+    void setDisabledField();
+    void createField();
 };
 
 #endif // COURTCASEWINDOW_H
